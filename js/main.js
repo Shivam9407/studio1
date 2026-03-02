@@ -13,23 +13,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const hoverElements = document.querySelectorAll('a, button, .cursor-pointer, [onclick]');
         hoverElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursor.style.width = '60px';
-                cursor.style.height = '60px';
-                cursor.style.backgroundColor = '#ff2e2e';
-                cursor.style.border = 'none';
-                cursor.style.mixBlendMode = 'normal';
-                cursor.style.opacity = '0.8';
-            });
+            // Check if element is inside a custom-navbar
+            const inNavbar = el.closest('custom-navbar');
 
-            el.addEventListener('mouseleave', () => {
-                cursor.style.width = '20px';
-                cursor.style.height = '20px';
-                cursor.style.backgroundColor = 'transparent';
-                cursor.style.border = '2px solid #ff2e2e';
-                cursor.style.mixBlendMode = 'difference';
-                cursor.style.opacity = '1';
-            });
+            if (!inNavbar) {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.width = '60px';
+                    cursor.style.height = '60px';
+                    cursor.style.backgroundColor = '#ff2e2e';
+                    cursor.style.border = 'none';
+                    cursor.style.mixBlendMode = 'normal';
+                    cursor.style.opacity = '0.8';
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                    cursor.style.backgroundColor = 'transparent';
+                    cursor.style.border = '2px solid #ff2e2e';
+                    cursor.style.mixBlendMode = 'difference';
+                    cursor.style.opacity = '1';
+                });
+            }
         });
     }
 

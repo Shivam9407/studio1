@@ -8,22 +8,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const section = document.getElementById('results-section') || document.querySelector('.metrics-section');
         if (!section) return;
 
-        const metricItems = document.querySelectorAll('.metric-item');
-        const animatedNumbers = document.querySelectorAll('.animated-number');
+        const metricItems = document.querySelectorAll('.metric-container');
+        const animatedNumbers = document.querySelectorAll('.metric-number');
         let hasAnimated = false;
 
         const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
-        const animateNumber = (element, targetValue, duration, delay) => {
+        const animateNumber = (element, targetValue, duration, delay, suffix = '') => {
             setTimeout(() => {
                 let startTime = null;
                 const updateFrame = (currentTime) => {
                     if (!startTime) startTime = currentTime;
                     const elapsed = currentTime - startTime;
                     let progress = easeOutCubic(Math.min(elapsed / duration, 1));
-                    element.textContent = Math.floor(progress * targetValue);
+                    element.textContent = Math.floor(progress * targetValue) + suffix;
                     if (elapsed < duration) requestAnimationFrame(updateFrame);
-                    else element.textContent = targetValue;
+                    else element.textContent = targetValue + suffix;
                 };
                 requestAnimationFrame(updateFrame);
             }, delay);
@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     animatedNumbers.forEach((el, i) => {
                         const target = parseInt(el.getAttribute('data-target'), 10);
-                        animateNumber(el, target, 1400, i * 200);
+                        const suffix = el.getAttribute('data-suffix') || '';
+                        animateNumber(el, target, 1400, i * 200, suffix);
                     });
                 }
             });

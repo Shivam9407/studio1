@@ -1,3 +1,38 @@
+// Global Custom Cursor Injection
+(() => {
+    // Only for desktop devices
+    if (window.matchMedia('(min-width: 768px)').matches) {
+        const style = document.createElement('style');
+        style.textContent = `
+            body { cursor: none; }
+            .custom-cursor {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 20px;
+                height: 20px;
+                border: 2px solid #ff2e2e;
+                border-radius: 50%;
+                pointer-events: none;
+                transform: translate(-50%, -50%);
+                z-index: 9999;
+                transition: width 0.2s, height 0.2s, background-color 0.2s, border 0.2s, opacity 0.2s;
+                mix-blend-mode: difference;
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.createElement('div');
+            cursor.className = 'custom-cursor';
+            // Set initial position out of view or centered to avoid flash
+            cursor.style.top = '-100px';
+            cursor.style.left = '-100px';
+            document.body.appendChild(cursor);
+        });
+    }
+})();
+
 class CustomNavbar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
@@ -11,11 +46,47 @@ class CustomNavbar extends HTMLElement {
                 <a class="text-sm font-mono uppercase tracking-widest text-white hover:text-primary transition-colors cursor-pointer" href="index.html#studio">Studio</a>
                 <a class="text-sm font-mono uppercase tracking-widest text-white hover:text-primary transition-colors cursor-pointer" href="/contact.html">Contact</a>
             </nav>
-            <button class="md:hidden text-white cursor-pointer">
+            <button id="mobile-menu-btn" class="md:hidden text-white cursor-pointer" aria-label="Toggle menu" aria-expanded="false">
                 <span class="material-symbols-outlined text-3xl">menu</span>
             </button>
         </header>
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu-overlay" class="fixed inset-0 z-30 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center gap-10 translate-x-full transition-transform duration-500 ease-in-out md:hidden">
+            <a class="text-4xl font-black uppercase tracking-tighter text-white hover:text-primary transition-colors" href="/index.html">Home</a>
+            <a class="text-4xl font-black uppercase tracking-tighter text-white hover:text-primary transition-colors" href="/work.html">Work</a>
+            <a class="text-4xl font-black uppercase tracking-tighter text-white hover:text-primary transition-colors" href="/contact.html">Contact</a>
+        </div>
         `;
+
+        // Hamburger toggle logic
+        const btn = this.querySelector('#mobile-menu-btn');
+        const overlay = this.querySelector('#mobile-menu-overlay');
+        const icon = btn.querySelector('.material-symbols-outlined');
+
+        btn.addEventListener('click', () => {
+            const isOpen = overlay.classList.contains('translate-x-0');
+            if (isOpen) {
+                overlay.classList.remove('translate-x-0');
+                overlay.classList.add('translate-x-full');
+                icon.textContent = 'menu';
+                btn.setAttribute('aria-expanded', 'false');
+            } else {
+                overlay.classList.remove('translate-x-full');
+                overlay.classList.add('translate-x-0');
+                icon.textContent = 'close';
+                btn.setAttribute('aria-expanded', 'true');
+            }
+        });
+
+        // Close menu when a nav link is clicked
+        overlay.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                overlay.classList.remove('translate-x-0');
+                overlay.classList.add('translate-x-full');
+                icon.textContent = 'menu';
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        });
     }
 }
 
@@ -31,7 +102,7 @@ class CustomFooter extends HTMLElement {
             </div>
             <div class="max-w-[1400px] mx-auto relative z-10 flex flex-col md:flex-row justify-between items-start">
                 <div class="flex flex-col gap-8 mb-16 md:mb-0">
-                    <h2 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] cursor-pointer hover:text-primary transition-colors" onclick="window.location.href='/contact.html'">
+                    <h2 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] cursor-pointer hover:text-black transition-colors" onclick="window.location.href='/contact.html'">
                         START A <br />
                         PROJECT
                     </h2>
@@ -54,7 +125,7 @@ class CustomFooter extends HTMLElement {
                         <span class="font-mono text-sm uppercase opacity-70">Locations</span>
                         <p class="font-bold">Tokyo / NYC / Remote</p>
                     </div>
-                    <p class="font-mono text-xs opacity-60 mt-8">© 2024 Studio Experimental Motion.</p>
+                    <p class="font-mono text-xs opacity-60 mt-8">&copy; 2026 Studio Experimental Motion.</p>
                 </div>
             </div>
         </footer>
