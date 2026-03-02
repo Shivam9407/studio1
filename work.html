@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Immersive Kinetic Gallery - STUDIO.X</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff2e2e",
+                        "background-light": "#f8f5f5",
+                        "background-dark": "#0A0A0A",
+                        "surface-dark": "#141414",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["Space Mono", "monospace"],
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.1%22/%3E%3C/svg%3E')",
+                    },
+                    animation: {
+                        'noise': 'noise 0.2s infinite steps(2)',
+                    },
+                    keyframes: {
+                        noise: {
+                            '0%, 100%': { transform: 'translate(0, 0)' },
+                            '10%': { transform: 'translate(-5%, -5%)' },
+                            '20%': { transform: 'translate(-10%, 5%)' },
+                            '30%': { transform: 'translate(5%, -10%)' },
+                            '40%': { transform: 'translate(-5%, 15%)' },
+                            '50%': { transform: 'translate(-10%, 5%)' },
+                            '60%': { transform: 'translate(15%, 0)' },
+                            '70%': { transform: 'translate(0, 15%)' },
+                            '80%': { transform: 'translate(3%, 35%)' },
+                            '90%': { transform: 'translate(-10%, 10%)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .snap-x-mandatory {
+                scroll-snap-type: x mandatory;
+            }
+            .snap-center {
+                scroll-snap-align: center;
+            }
+            .glass-badge {
+                background: rgba(255, 46, 46, 0.1);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 46, 46, 0.3);
+                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            }.card-perspective {
+                perspective: 1000px;
+            }
+            .parallax-img {
+                transition: transform 0.8s cubic-bezier(0.33, 1, 0.68, 1);
+            }
+            .group:hover .parallax-img {
+                transform: scale(1.15) translateZ(20px);
+            }
+        }
+        
+        /* Custom Cursor CSS */
+        body {
+            cursor: none;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff2e2e;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            mix-blend-mode: difference;
+        }
+
+        a:hover~.custom-cursor,
+        button:hover~.custom-cursor,
+        .cursor-hover:hover~.custom-cursor,
+        .cursor-pointer:hover~.custom-cursor {
+            background-color: #ff2e2e;
+            width: 50px;
+            height: 50px;
+            opacity: 0.8;
+            border: none;
+        }
+    </style>
+    <script src="js/components.js"></script>
+</head>
+
+<body
+    class="bg-background-dark text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-white relative">
+    <!-- Global Static Noise Overlay -->
+    <div class="fixed inset-0 z-50 pointer-events-none opacity-[0.06]"
+        style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);">
+    </div>
+    <!-- Custom Cursor Element -->
+    <div class="custom-cursor hidden md:block" style="top: 50%; left: 50%;"></div>
+
+    <custom-navbar></custom-navbar>
+    <main class="flex-grow flex flex-col items-center w-full">
+        <section
+            class="w-full max-w-[1440px] px-6 md:px-10 pt-32 pb-16 flex flex-col md:flex-row justify-between items-end gap-12 border-b border-white/5">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="h-[2px] w-16 bg-primary"></span>
+                    <span class="text-primary font-mono text-xs font-bold uppercase tracking-[0.3em]">Volume 04 /
+                        2024</span>
+                </div>
+                <h1 class="text-7xl md:text-[10rem] font-black tracking-tighter uppercase leading-[0.8] text-white">
+                    Selected<br /><span class="text-transparent stroke-text"
+                        style="-webkit-text-stroke: 1px #ff2e2e;">Works</span>
+                </h1>
+            </div>
+            <div class="max-w-md pb-4">
+                <p class="text-slate-400 text-sm md:text-base leading-relaxed font-mono border-l-2 border-primary pl-6">
+                    A curated selection of experimental motion, VFX, and direction projects. Pushing the boundaries of
+                    digital kinetics for brands who dare to be different.
+                </p>
+            </div>
+        </section>
+        <section class="w-full pt-12 pb-20 overflow-hidden">
+            <!-- Add Featured Works Header -->
+            <div class="w-full max-w-[1440px] px-6 md:px-10 mb-12 flex justify-between items-end">
+                <h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase">
+                    Featured Works
+                </h2>
+            </div>
+
+            <div id="works-carousel"
+                class="w-full overflow-x-auto scrollbar-hide flex px-6 md:px-[10vw] cursor-grab active:cursor-grabbing">
+                <div class="flex gap-12 pr-[10vw]">
+                    <div
+                        class="group relative w-[85vw] md:w-[70vw] lg:w-[1000px] aspect-video flex-shrink-0 pointer-events-none sm:pointer-events-auto cursor-pointer overflow-hidden snap-center card-perspective select-none">
+                        <div class="parallax-img absolute inset-0 bg-cover bg-center"
+                            data-alt="Abstract dark fluid 3D render with red neon lighting"
+                            style='background-image: url("assets/images/img1.webp");'></div>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100">
+                        </div>
+                        <div class="absolute top-10 left-10 z-20">
+                            <span
+                                class="glass-badge inline-block text-white text-[11px] font-bold font-mono px-5 py-2 uppercase tracking-[0.2em] rounded-sm">
+                                2024 / Kinetic Motion
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col justify-end p-12 z-20">
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <h3
+                                        class="text-6xl md:text-9xl font-black text-white mb-6 tracking-tighter uppercase leading-none transform transition-transform duration-500 group-hover:-translate-y-2 select-none">
+                                        NEON<br />GENESIS
+                                    </h3>
+                                    <div
+                                        class="flex gap-6 text-[11px] font-mono text-primary uppercase tracking-[0.3em] font-bold">
+                                        <span>3D Design</span>
+                                        <span>•</span>
+                                        <span>Art Direction</span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="size-24 rounded-full border-2 border-white/20 flex items-center justify-center text-white transition-all duration-500 group-hover:bg-primary group-hover:border-primary group-hover:scale-110 group-hover:rotate-[-45deg]">
+                                    <span class="material-symbols-outlined text-4xl">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="group relative w-[85vw] md:w-[70vw] lg:w-[1000px] aspect-video flex-shrink-0 pointer-events-none sm:pointer-events-auto cursor-pointer overflow-hidden snap-center card-perspective select-none">
+                        <div class="parallax-img absolute inset-0 bg-cover bg-center"
+                            data-alt="Cyberpunk city street at night with heavy rain and neon signs"
+                            style='background-image: url("assets/images/img2.webp");'></div>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100">
+                        </div>
+                        <div class="absolute top-10 left-10 z-20">
+                            <span
+                                class="glass-badge inline-block text-white text-[11px] font-bold font-mono px-5 py-2 uppercase tracking-[0.2em] rounded-sm">
+                                2023 / VFX Award
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col justify-end p-12 z-20">
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <h3
+                                        class="text-6xl md:text-9xl font-black text-white mb-6 tracking-tighter uppercase leading-none transform transition-transform duration-500 group-hover:-translate-y-2 select-none">
+                                        HYPER<br />DRIVE
+                                    </h3>
+                                    <div
+                                        class="flex gap-6 text-[11px] font-mono text-primary uppercase tracking-[0.3em] font-bold">
+                                        <span>Visual Effects</span>
+                                        <span>•</span>
+                                        <span>Experience</span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="size-24 rounded-full border-2 border-white/20 flex items-center justify-center text-white transition-all duration-500 group-hover:bg-primary group-hover:border-primary group-hover:scale-110 group-hover:rotate-[-45deg]">
+                                    <span class="material-symbols-outlined text-4xl">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW PROJECT: LUMINA -->
+                    <div
+                        class="group relative w-[85vw] md:w-[70vw] lg:w-[1000px] aspect-video flex-shrink-0 pointer-events-none sm:pointer-events-auto cursor-pointer overflow-hidden snap-center card-perspective select-none">
+                        <!-- We use an image visually matching Neon Genesis/Hyper Drive aesthetics -->
+                        <div class="parallax-img absolute inset-0 bg-cover bg-center"
+                            data-alt="Abstract colorful light waves moving fluidly"
+                            style='background-image: url("https://images.pexels.com/photos/2850347/pexels-photo-2850347.jpeg");'>
+                        </div>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100">
+                        </div>
+                        <div class="absolute top-10 left-10 z-20">
+                            <span
+                                class="glass-badge inline-block text-white text-[11px] font-bold font-mono px-5 py-2 uppercase tracking-[0.2em] rounded-sm">
+                                2024 / Audio Visual
+                            </span>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col justify-end p-12 z-20">
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <h3
+                                        class="text-6xl md:text-9xl font-black text-white mb-6 tracking-tighter uppercase leading-none transform transition-transform duration-500 group-hover:-translate-y-2 select-none">
+                                        LUMINA<br />WAVES
+                                    </h3>
+                                    <div
+                                        class="flex gap-6 text-[11px] font-mono text-primary uppercase tracking-[0.3em] font-bold">
+                                        <span>Lighting Design</span>
+                                        <span>•</span>
+                                        <span>Installation</span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="size-24 rounded-full border-2 border-white/20 flex items-center justify-center text-white transition-all duration-500 group-hover:bg-primary group-hover:border-primary group-hover:scale-110 group-hover:rotate-[-45deg]">
+                                    <span class="material-symbols-outlined text-4xl">arrow_forward</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full max-w-[1440px] mx-auto px-6 md:px-10 mt-12 flex items-center justify-between">
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-[0.4em]">Inertial
+                            Scroll Enabled</span>
+                        <div class="h-px w-24 bg-white/10 relative overflow-hidden">
+                            <div
+                                class="absolute inset-0 bg-primary w-1/3 animate-[scroll-indicator_3s_infinite_linear]">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-12">
+                    <div class="flex gap-2" id="carousel-indicators">
+                        <div class="h-1 w-12 bg-primary transition-colors duration-300"></div>
+                        <div class="h-1 w-12 bg-white/10 transition-colors duration-300"></div>
+                        <div class="h-1 w-12 bg-white/10 transition-colors duration-300"></div>
+                    </div>
+                    <div class="flex items-center gap-2 group cursor-pointer">
+                        <span class="text-[10px] font-bold font-mono text-white uppercase tracking-[0.3em]">Drag to
+                            Explore</span>
+                        <span
+                            class="material-symbols-outlined text-primary group-hover:translate-x-2 transition-transform">east</span>
+                    </div>
+                </div>
+        </section>
+
+        <!-- Recent Projects -->
+        <section class="w-full max-w-[1440px] px-6 md:px-10 pb-32">
+            <!-- Header -->
+            <div class="mb-12 border-t border-white/5 pt-16 flex flex-col md:flex-row justify-between items-end gap-6">
+                <div>
+                    <h2 class="text-xs font-mono text-primary uppercase tracking-[0.3em] font-bold mb-4">Recent Work
+                    </h2>
+                    <h3
+                        class="text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter uppercase text-white leading-none">
+                        Latest<br />Releases
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Grid: 2 Columns, 3 Rows -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                <!-- Project 1: Nike Air Max (From Home) -->
+                <div class="group relative aspect-[4/5] md:aspect-square lg:aspect-[4/3] w-full overflow-hidden bg-surface-dark cursor-pointer"
+                    onclick="window.location.href='nike-air-max.html'">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                        style="background-image: url('https://images.pexels.com/photos/18946650/pexels-photo-18946650.jpeg');">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-700">
+                    </div>
+
+                    <div
+                        class="absolute inset-x-0 bottom-0 p-8 md:p-12 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-primary uppercase tracking-widest font-bold bg-primary/10 px-3 py-1 rounded backdrop-blur-md">2025</span>
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-gray-400 uppercase tracking-widest">Creative
+                                Direction • 3D</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <h4
+                                class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                                Nike Air<br>Max 2025</h4>
+                            <div
+                                class="size-12 md:size-16 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500">
+                                <span
+                                    class="material-symbols-outlined -rotate-45 group-hover:rotate-0 transition-transform duration-500 text-2xl md:text-3xl">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Spotify Wrapped (From Home) -->
+                <div class="group relative aspect-[4/5] md:aspect-square lg:aspect-[4/3] w-full overflow-hidden bg-surface-dark cursor-pointer"
+                    onclick="window.location.href='spotify-wrapped.html'">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                        style="background-image: url('https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg');">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-700">
+                    </div>
+
+                    <div
+                        class="absolute inset-x-0 bottom-0 p-8 md:p-12 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-primary uppercase tracking-widest font-bold bg-primary/10 px-3 py-1 rounded backdrop-blur-md">2024</span>
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-gray-400 uppercase tracking-widest">Motion
+                                Identity • Data Viz</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <h4
+                                class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                                Spotify<br>Wrapped</h4>
+                            <div
+                                class="size-12 md:size-16 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500">
+                                <span
+                                    class="material-symbols-outlined -rotate-45 group-hover:rotate-0 transition-transform duration-500 text-2xl md:text-3xl">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: Cyberpunk 2077 UI (From Home) -->
+                <div class="group relative aspect-[4/5] md:aspect-square lg:aspect-[4/3] w-full overflow-hidden bg-surface-dark cursor-pointer"
+                    onclick="window.location.href='cyberpunk-2077-ui.html'">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                        style="background-image: url('https://images.pexels.com/photos/3165335/pexels-photo-3165335.jpeg');">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-700">
+                    </div>
+
+                    <div
+                        class="absolute inset-x-0 bottom-0 p-8 md:p-12 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-white uppercase tracking-widest font-bold bg-primary px-3 py-1 rounded backdrop-blur-md">Featured</span>
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-gray-400 uppercase tracking-widest">Interface
+                                Design • Animation</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <h4
+                                class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                                Cyberpunk<br>2077 UI</h4>
+                            <div
+                                class="size-12 md:size-16 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500">
+                                <span
+                                    class="material-symbols-outlined -rotate-45 group-hover:rotate-0 transition-transform duration-500 text-2xl md:text-3xl">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: PlayStation 5 Pro (New) -->
+                <div class="group relative aspect-[4/5] md:aspect-square lg:aspect-[4/3] w-full overflow-hidden bg-surface-dark cursor-pointer"
+                    onclick="window.location.href='playstation-5-pro.html'">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                        style="background-image: url('https://images.pexels.com/photos/194511/pexels-photo-194511.jpeg');">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-700">
+                    </div>
+
+                    <div
+                        class="absolute inset-x-0 bottom-0 p-8 md:p-12 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-primary uppercase tracking-widest font-bold bg-primary/10 px-3 py-1 rounded backdrop-blur-md">2024</span>
+                            <span class="font-mono text-[10px] md:text-xs text-gray-400 uppercase tracking-widest">UI
+                                System
+                                • Motion</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <h4
+                                class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                                PlayStation<br>5 Pro</h4>
+                            <div
+                                class="size-12 md:size-16 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500">
+                                <span
+                                    class="material-symbols-outlined -rotate-45 group-hover:rotate-0 transition-transform duration-500 text-2xl md:text-3xl">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5: Architecture Brio Studio (New) -->
+                <div class="group relative aspect-[4/5] md:aspect-square lg:aspect-[4/3] w-full overflow-hidden bg-surface-dark cursor-pointer"
+                    onclick="window.location.href='architecture-brio-studio.html'">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                        style="background-image: url('https://images.pexels.com/photos/425160/pexels-photo-425160.jpeg');">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-700">
+                    </div>
+
+                    <div
+                        class="absolute inset-x-0 bottom-0 p-8 md:p-12 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-primary uppercase tracking-widest font-bold bg-primary/10 px-3 py-1 rounded backdrop-blur-md">2025</span>
+                            <span class="font-mono text-[10px] md:text-xs text-gray-400 uppercase tracking-widest">Art
+                                Direction
+                                • 3D</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <h4
+                                class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                                Architecture<br>Brio Studio</h4>
+                            <div
+                                class="size-12 md:size-16 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500">
+                                <span
+                                    class="material-symbols-outlined -rotate-45 group-hover:rotate-0 transition-transform duration-500 text-2xl md:text-3xl">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6: Vision VR Pro (New) -->
+                <div class="group relative aspect-[4/5] md:aspect-square lg:aspect-[4/3] w-full overflow-hidden bg-surface-dark cursor-pointer"
+                    onclick="window.location.href='vision-vr-pro.html'">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+                        style="background-image: url('https://images.pexels.com/photos/8728380/pexels-photo-8728380.jpeg');">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-700">
+                    </div>
+
+                    <div
+                        class="absolute inset-x-0 bottom-0 p-8 md:p-12 flex flex-col justify-end transform translate-y-8 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-primary uppercase tracking-widest font-bold bg-primary/10 px-3 py-1 rounded backdrop-blur-md">2024</span>
+                            <span
+                                class="font-mono text-[10px] md:text-xs text-gray-400 uppercase tracking-widest">Spatial
+                                UI • R&D</span>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <h4
+                                class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-[0.9]">
+                                Vision VR<br>Pro</h4>
+                            <div
+                                class="size-12 md:size-16 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500">
+                                <span
+                                    class="material-symbols-outlined -rotate-45 group-hover:rotate-0 transition-transform duration-500 text-2xl md:text-3xl">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section
+            class="relative py-32 md:py-48 px-6 md:px-12 w-full overflow-hidden flex items-center justify-center min-h-[80vh] bg-[#0A0A0A] border-t border-white/5">
+            <!-- Background Image -->
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.85] mix-blend-luminosity brightness-75"
+                style="background-image: url('https://images.pexels.com/photos/1181438/pexels-photo-1181438.jpeg');">
+            </div>
+            <!-- Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/80 via-[#0A0A0A]/30 to-[#0A0A0A]/80 z-0"></div>
+
+            <div class="relative z-10 max-w-[1400px] w-full mx-auto flex flex-col items-center text-center">
+                <!-- Heading -->
+                <div class="relative mb-10 w-max max-w-full">
+                    <div
+                        class="absolute -top-4 md:-top-6 -left-6 md:-left-12 w-4 md:w-6 h-4 md:h-6 rounded-full border-4 border-[#ff2e2e]">
+                    </div>
+                    <h2
+                        class="text-4xl md:text-6xl lg:text-8xl font-[650] font-display tracking-tight leading-[1.1] text-white">
+                        WE TRANSFORM BRANDS.<br>
+                        <span class="text-[#ff2e2e]">YOUR SUCCESS IS NEXT.</span>
+                    </h2>
+                </div>
+
+                <!-- Subtitle -->
+                <p class="text-white/80 font-display text-lg md:text-xl max-w-xl mx-auto mb-16 leading-relaxed">
+                    Start your project now by booking a one-on-one<br class="hidden md:block">consultation with our
+                    expert.
+                </p>
+
+                <!-- Buttons/Links -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-10 md:gap-16 mb-32 w-full">
+                    <a href="contact.html"
+                        class="group relative font-display text-xl md:text-2xl font-semibold text-white tracking-tight">
+                        book a call
+                        <span
+                            class="absolute -bottom-3 left-0 w-8 h-[3px] bg-[#ff2e2e] group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="contact.html"
+                        class="group relative font-display text-xl md:text-2xl font-semibold text-white tracking-tight">
+                        chat on whatsapp
+                        <span
+                            class="absolute -bottom-3 left-0 w-8 h-[3px] bg-[#ff2e2e] group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                </div>
+
+                <!-- Partners -->
+                <div class="flex flex-col items-center w-full">
+                    <p class="font-display text-sm md:text-base text-gray-400 mb-12">
+                        Meet the partners who are part of<br>our success story
+                    </p>
+                    <div class="flex flex-wrap justify-center items-center gap-10 md:gap-24 opacity-60">
+                        <!-- Pseudo-logos -->
+                        <div
+                            class="text-xl md:text-2xl font-display font-medium tracking-wide text-white flex items-center gap-3 lowercase">
+                            <span class="material-symbols-outlined shrink-0 text-3xl">egg_alt</span> avocadoo
+                        </div>
+                        <div
+                            class="text-2xl md:text-3xl font-display font-black tracking-widest text-white flex items-center gap-2 uppercase">
+                            bastilio
+                        </div>
+                        <div
+                            class="text-xl md:text-2xl font-display font-medium tracking-[0.2em] text-white flex items-center gap-3 uppercase">
+                            <span class="material-symbols-outlined shrink-0 text-3xl">filter_vintage</span> GESSLER
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <custom-footer></custom-footer>
+    <style>
+        @keyframes scroll-indicator {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(300%);
+            }
+        }
+
+        .snap-x-mandatory {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .stroke-text {
+            color: transparent;
+            -webkit-text-stroke: 1px #ff2e2e;
+        }
+    </style>
+    <!-- Script to update custom cursor position -->
+    <script>
+        const cursor = document.querySelector('.custom-cursor');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Add hover effect logic
+        const hoverElements = document.querySelectorAll('a, button, .cursor-pointer');
+
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '60px';
+                cursor.style.height = '60px';
+                cursor.style.backgroundColor = '#ff2e2e';
+                cursor.style.border = 'none';
+                cursor.style.mixBlendMode = 'normal';
+                cursor.style.opacity = '0.8';
+            });
+
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '20px';
+                cursor.style.height = '20px';
+                cursor.style.backgroundColor = 'transparent';
+                cursor.style.border = '2px solid #ff2e2e';
+                cursor.style.mixBlendMode = 'difference';
+                cursor.style.opacity = '1';
+            });
+        });
+
+        // Fast & smooth Drag-to-Scroll Logic for Carousel
+        const slider = document.getElementById('works-carousel');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        // Temporarily disable snap during drag for fluidity
+        const disableSnap = () => slider.style.scrollSnapType = 'none';
+        const enableSnap = () => slider.style.scrollSnapType = 'x mandatory';
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.classList.add('active'); // apply grabbing cursor
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+            disableSnap();
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.classList.remove('active');
+            enableSnap();
+        });
+
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.classList.remove('active');
+            // Re-enabling snap causes a smooth animation to closest card automatically
+            enableSnap();
+        });
+
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2.5; // Scroll speed multiplier
+            slider.scrollLeft = scrollLeft - walk;
+        });
+
+        // Update indicators on scroll
+        const indicators = document.querySelectorAll('#carousel-indicators > div');
+        slider.addEventListener('scroll', () => {
+            // Calculate which card is most visible based on scroll percentage
+            const scrollPercentage = slider.scrollLeft / (slider.scrollWidth - slider.clientWidth);
+
+            // We have 3 cards, so indices are 0 to 2
+            let activeIndex = Math.round(scrollPercentage * (indicators.length - 1));
+
+            // Ensure index is within logical bounds
+            activeIndex = Math.max(0, Math.min(activeIndex, indicators.length - 1));
+
+            indicators.forEach((indicator, index) => {
+                if (index === activeIndex) {
+                    indicator.classList.remove('bg-white/10');
+                    indicator.classList.add('bg-primary');
+                } else {
+                    indicator.classList.remove('bg-primary');
+                    indicator.classList.add('bg-white/10');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Contact â€” Studio</title>
+    <meta name="description"
+        content="Get in touch with Studio. Tell us about your project, and let's create something extraordinary together." />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <!-- Tailwind Config -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff2e2e",
+                        "background-dark": "#0A0A0A",
+                        "surface-dark": "#141414",
+                        "surface-darker": "#050505",
+                        "accent-gray": "#333333",
+                        "text-dim": "#888888",
+                        "border-subtle": "#1f1f1f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["Space Mono", "monospace"],
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.1%22/%3E%3C/svg%3E')",
+                    },
+                    animation: {
+                        'noise': 'noise 0.2s infinite steps(2)',
+                    },
+                    keyframes: {
+                        noise: {
+                            '0%, 100%': { transform: 'translate(0, 0)' },
+                            '10%': { transform: 'translate(-5%, -5%)' },
+                            '20%': { transform: 'translate(-10%, 5%)' },
+                            '30%': { transform: 'translate(5%, -10%)' },
+                            '40%': { transform: 'translate(-5%, 15%)' },
+                            '50%': { transform: 'translate(-10%, 5%)' },
+                            '60%': { transform: 'translate(15%, 0)' },
+                            '70%': { transform: 'translate(0, 15%)' },
+                            '80%': { transform: 'translate(3%, 35%)' },
+                            '90%': { transform: 'translate(-10%, 10%)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom Cursor CSS */
+        body {
+            cursor: none;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff2e2e;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            mix-blend-mode: difference;
+        }
+
+        /* Reveal animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.8s cubic-bezier(0.5, 0, 0, 1), transform 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.2s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: 0.3s;
+        }
+
+        .reveal-delay-4 {
+            transition-delay: 0.4s;
+        }
+
+        /* Hover underline animation */
+        .hover-underline-animation {
+            display: inline-block;
+            position: relative;
+        }
+
+        .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #ff2e2e;
+            transform-origin: bottom right;
+            transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* =============================================
+           FORM â€” COMPREHENSIVE STYLING
+           Overrides Tailwind Forms plugin + all browser
+           defaults. All !important rules intentional.
+        ============================================= */
+
+        /* 1. Wipe every browser focus style from ALL form elements */
+        input,
+        textarea,
+        select,
+        button {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus,
+        button:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            --tw-ring-shadow: 0 0 #0000 !important;
+            --tw-ring-offset-shadow: 0 0 #0000 !important;
+        }
+
+        /* 2. Custom red bottom-border focus â€” same on every field */
+        .form-field:focus {
+            border-bottom-color: #ff2e2e !important;
+            box-shadow: 0 2px 0 0 rgba(255, 46, 46, 0.25) !important;
+            transition: border-color 250ms ease, box-shadow 250ms ease;
+        }
+
+        /* 3. SELECT â€” kill native arrow entirely, inject red SVG chevron */
+        select {
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+            /* single red chevron as background */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ff2e2e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 0px center !important;
+            background-size: 18px !important;
+            padding-right: 26px !important;
+            cursor: pointer !important;
+        }
+
+        select:focus {
+            border-bottom-color: #ff2e2e !important;
+            box-shadow: 0 2px 0 0 rgba(255, 46, 46, 0.25) !important;
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+        }
+
+        /* 4. Autofill â€” keep dark background */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus {
+            -webkit-text-fill-color: #E5E5E5;
+            -webkit-box-shadow: 0 0 0px 1000px #0A0A0A inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        /* 5. Form textarea auto-expand */
+        textarea {
+            field-sizing: content;
+            min-height: 60px;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff2e2e;
+        }
+
+        /* FAQ Smooth Accordion */
+        .faq-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .faq-item.is-open .faq-content {
+            grid-template-rows: 1fr;
+        }
+
+        .faq-inner {
+            overflow: hidden;
+        }
+    </style>
+    <script src="js/components.js"></script>
+</head>
+
+<body class="bg-background-dark font-display text-white overflow-x-hidden selection:bg-primary selection:text-white">
+    <!-- Global Static Noise Overlay -->
+    <div class="fixed inset-0 z-50 pointer-events-none opacity-[0.06]"
+        style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);">
+    </div>
+    <!-- Custom Cursor -->
+    <div class="custom-cursor hidden md:block" style="top: 50%; left: 50%;"></div>
+
+    <!-- Navbar -->
+    <custom-navbar></custom-navbar>
+
+    <!-- Hero Header -->
+    <header class="pt-36 pb-20 px-6 md:px-12 relative overflow-hidden">
+        <div class="max-w-[1400px] mx-auto">
+            <!-- Label -->
+            <div class="flex items-center gap-3 mb-8 reveal active">
+                <div class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(255,46,46,0.8)]"></div>
+                <span class="font-mono text-xs uppercase tracking-[0.25em] text-primary">Get In Touch</span>
+            </div>
+            <!-- Big Title -->
+            <h1
+                class="text-[clamp(4rem,12vw,12rem)] font-black uppercase tracking-[-0.04em] leading-[0.85] text-white reveal active reveal-delay-1">
+                Contact
+            </h1>
+            <p class="font-mono text-sm text-text-dim uppercase tracking-[0.2em] mt-8 reveal active reveal-delay-2">
+                Questions, Ideas, or just saying hi
+            </p>
+        </div>
+        <!-- Decorative gradient -->
+        <div
+            class="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none">
+        </div>
+    </header>
+
+    <!-- Main Contact Form Section -->
+    <main class="px-6 md:px-12 pb-32 relative z-10">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+
+                <!-- Left column: Info -->
+                <div class="lg:col-span-4 reveal">
+                    <div class="border-t border-white/10 pt-12">
+                        <h3 class="text-2xl font-bold mb-8 text-white tracking-tight uppercase">Let's work together</h3>
+                        <ul class="space-y-5 text-text-dim font-light text-sm tracking-wide">
+                            <li
+                                class="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-default">
+                                <span
+                                    class="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(255,46,46,0.8)] shrink-0"></span>
+                                Quick response within 24 hours
+                            </li>
+                            <li
+                                class="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-default">
+                                <span
+                                    class="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(255,46,46,0.8)] shrink-0"></span>
+                                Transparent communication
+                            </li>
+                            <li
+                                class="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-default">
+                                <span
+                                    class="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(255,46,46,0.8)] shrink-0"></span>
+                                Real-time project tracking
+                            </li>
+                            <li
+                                class="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-default">
+                                <span
+                                    class="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(255,46,46,0.8)] shrink-0"></span>
+                                Multiple languages supported
+                            </li>
+                            <li
+                                class="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-default">
+                                <span
+                                    class="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(255,46,46,0.8)] shrink-0"></span>
+                                Available across time zones
+                            </li>
+                            <li
+                                class="flex items-center gap-3 hover:text-primary transition-colors duration-200 cursor-default">
+                                <span
+                                    class="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(255,46,46,0.8)] shrink-0"></span>
+                                Unlimited revisions
+                            </li>
+                        </ul>
+
+                        <!-- Quick contact links -->
+                        <div class="mt-16 space-y-6">
+                            <div>
+                                <span class="font-mono text-xs text-text-dim uppercase tracking-[0.15em]">Email</span>
+                                <a href="mailto:hello@studio.com"
+                                    class="block mt-2 text-white hover:text-primary transition-colors font-medium hover-underline-animation">
+                                    hello@studio.com
+                                </a>
+                            </div>
+                            <div>
+                                <span
+                                    class="font-mono text-xs text-text-dim uppercase tracking-[0.15em]">Location</span>
+                                <p class="mt-2 text-white font-medium">Tokyo / NYC / Remote</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right column: Form -->
+                <div class="lg:col-span-7 lg:col-start-6 reveal reveal-delay-2">
+                    <div class="border-t border-white/10 pt-12 mb-12">
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white tracking-tight uppercase">Tell us
+                            about your
+                            project</h2>
+                        <p class="text-text-dim font-light text-sm leading-relaxed">
+                            Just want to say hello? Skip to the name field below.
+                        </p>
+                        <div class="mt-6 text-xs text-gray-600 max-w-xs leading-relaxed font-mono">
+                            Whether you have a specific project in mind or just want to explore possibilities, we're
+                            here to help turn your vision into reality.
+                        </div>
+                    </div>
+
+                    <form class="space-y-10" id="contact-form" onsubmit="handleSubmit(event)">
+                        <!-- Service -->
+                        <div class="relative group">
+                            <label
+                                class="block font-mono text-xs text-text-dim uppercase tracking-[0.15em] mb-4">Service</label>
+                            <div class="relative">
+                                <select id="service"
+                                    class="w-full bg-transparent border-b border-border-subtle py-3 text-base focus:border-primary focus:outline-none transition-all cursor-pointer text-gray-300 appearance-none">
+                                    <option class="bg-[#0A0A0A] text-gray-500" disabled selected value="">Select service
+                                    </option>
+                                    <option class="bg-[#0A0A0A] text-white">3D Animation</option>
+                                    <option class="bg-[#0A0A0A] text-white">Motion Identity</option>
+                                    <option class="bg-[#0A0A0A] text-white">Experience Design</option>
+                                    <option class="bg-[#0A0A0A] text-white">VFX</option>
+                                    <option class="bg-[#0A0A0A] text-white">Branding</option>
+                                    <option class="bg-[#0A0A0A] text-white">Web Development</option>
+                                    <option class="bg-[#0A0A0A] text-white">Consulting</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Budget -->
+                        <div class="relative group">
+                            <label
+                                class="block font-mono text-xs text-text-dim uppercase tracking-[0.15em] mb-4">Budget</label>
+                            <div class="relative">
+                                <select id="budget"
+                                    class="w-full bg-transparent border-b border-border-subtle py-3 text-base focus:border-primary focus:outline-none transition-all cursor-pointer text-gray-300 appearance-none">
+                                    <option class="bg-[#0A0A0A] text-gray-500" disabled selected value="">What is your
+                                        budget?</option>
+                                    <option class="bg-[#0A0A0A] text-white">&lt; $5k</option>
+                                    <option class="bg-[#0A0A0A] text-white">$5k â€“ $10k</option>
+                                    <option class="bg-[#0A0A0A] text-white">$10k â€“ $25k</option>
+                                    <option class="bg-[#0A0A0A] text-white">$25k+</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Name -->
+                        <div class="group relative">
+                            <label class="block font-mono text-xs text-text-dim uppercase tracking-[0.15em] mb-4"
+                                for="name">Name</label>
+                            <input id="name"
+                                class="w-full bg-transparent border-b border-border-subtle py-3 text-base focus:border-primary transition-all placeholder-gray-700 text-white"
+                                placeholder="Your full name" type="text" />
+                        </div>
+
+                        <!-- Email -->
+                        <div class="group relative">
+                            <label class="block font-mono text-xs text-text-dim uppercase tracking-[0.15em] mb-4"
+                                for="email">Email</label>
+                            <input id="email"
+                                class="w-full bg-transparent border-b border-border-subtle py-3 text-base focus:border-primary transition-all placeholder-gray-700 text-white"
+                                placeholder="your@email.com" type="email" />
+                        </div>
+
+                        <!-- Message -->
+                        <div class="group relative">
+                            <label class="block font-mono text-xs text-text-dim uppercase tracking-[0.15em] mb-4"
+                                for="message">Message</label>
+                            <textarea id="message"
+                                class="w-full bg-transparent border-b border-border-subtle py-3 text-base focus:border-primary transition-all placeholder-gray-700 text-white resize-none"
+                                placeholder="Tell us about your project in a few wordsâ€¦" rows="3"></textarea>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="pt-4">
+                            <button
+                                class="group flex items-center gap-3 text-base font-bold text-white hover:text-primary transition-colors"
+                                type="submit">
+                                <span class="hover-underline-animation uppercase tracking-wider">Submit Form</span>
+                                <span
+                                    class="material-symbols-outlined text-base transform group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                            <p id="form-feedback" class="mt-6 font-mono text-xs text-primary hidden"></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Contact Methods Strip -->
+    <section class="bg-surface-dark border-t border-border-subtle py-24">
+        <div class="max-w-[1400px] mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+                <!-- Quick Start -->
+                <div class="flex flex-col items-start group reveal">
+                    <span
+                        class="material-symbols-outlined text-primary text-2xl mb-5 group-hover:scale-110 group-hover:text-white transition-all duration-300">bolt</span>
+                    <h4 class="font-bold text-lg mb-2 text-white">QUICK START</h4>
+                    <p class="text-sm text-text-dim mb-5 leading-relaxed whitespace-nowrap">BOOK A 15 MIN CALL.</p>
+                    <a class="text-sm font-bold text-white hover:text-primary transition-colors hover-underline-animation uppercase tracking-wider"
+                        href="#">schedule now</a>
+                </div>
+                <!-- WhatsApp -->
+                <div class="flex flex-col items-start group reveal reveal-delay-1">
+                    <span
+                        class="material-symbols-outlined text-primary text-2xl mb-5 group-hover:scale-110 group-hover:text-white transition-all duration-300">chat_bubble</span>
+                    <h4 class="font-bold text-lg mb-2 text-white">CHAT WITH US</h4>
+                    <p class="text-sm text-text-dim mb-5 leading-relaxed">Get immediate answers on WhatsApp.</p>
+                    <a class="text-sm font-bold text-white hover:text-primary transition-colors hover-underline-animation uppercase tracking-wider"
+                        href="#">start chat</a>
+                </div>
+                <!-- Email -->
+                <div class="flex flex-col items-start group reveal reveal-delay-2">
+                    <span
+                        class="material-symbols-outlined text-primary text-2xl mb-5 group-hover:scale-110 group-hover:text-white transition-all duration-300">send</span>
+                    <h4 class="font-bold text-lg mb-2 text-white">SHOOT US AN EMAIL</h4>
+                    <p class="text-sm text-text-dim mb-5 leading-relaxed">Skip the form and drop a quick email.</p>
+                    <a class="text-sm font-bold text-white hover:text-primary transition-colors hover-underline-animation uppercase tracking-wider"
+                        href="mailto:hello@studio.com">send email</a>
+                </div>
+                <!-- Location -->
+                <div class="flex flex-col items-start group reveal reveal-delay-3">
+                    <span
+                        class="material-symbols-outlined text-primary text-2xl mb-5 group-hover:scale-110 group-hover:text-white transition-all duration-300">location_on</span>
+                    <h4 class="font-bold text-lg mb-2 text-white">OUR BASES</h4>
+                    <p class="text-sm text-text-dim mb-5 leading-relaxed">Tokyo / New York City / Remote Worldwide</p>
+                    <a class="text-sm font-bold text-white hover:text-primary transition-colors hover-underline-animation uppercase tracking-wider"
+                        href="#">get directions</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-24 md:py-32 px-6 md:px-12 bg-[#0A0A0A] relative z-20 border-t border-white/5">
+        <div class="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24 relative z-10 w-full">
+
+            <!-- Left Column: Accordions -->
+            <div class="lg:w-7/12 flex flex-col w-full">
+                <h2 class="text-sm md:text-base font-mono font-bold text-[#ff2e2e] uppercase tracking-[0.2em] mb-12">
+                    FAQ
+                </h2>
+
+                <div class="flex flex-col border-t border-white/10 w-full font-display">
+                    <!-- FAQ Item 1 -->
+                    <div
+                        class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                        <div class="py-8 flex justify-between items-center w-full pr-4">
+                            <h4
+                                class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                What can I expect within 48 hours?</h4>
+                            <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                <div
+                                    class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                </div>
+                                <div
+                                    class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                            <div class="faq-inner overflow-hidden">
+                                <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                    You can expect an initial concept or preliminary response within the first 48
+                                    hours of onboarding, giving you immediate visibility into our design direction.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div
+                        class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                        <div class="py-8 flex justify-between items-center w-full pr-4">
+                            <h4
+                                class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                How does the subscription model work?</h4>
+                            <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                <div
+                                    class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                </div>
+                                <div
+                                    class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                            <div class="faq-inner overflow-hidden">
+                                <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                    Our subscription model offers unlimited design requests for a flat monthly fee,
+                                    allowing you to submit projects as needed without additional costs.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div
+                        class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                        <div class="py-8 flex justify-between items-center w-full pr-4">
+                            <h4
+                                class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                Can I pause my subscription if needed?</h4>
+                            <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                <div
+                                    class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                </div>
+                                <div
+                                    class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                            <div class="faq-inner overflow-hidden">
+                                <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                    Yes, you can pause your subscription at any time. Simply notify us before the
+                                    next billing cycle and your remaining days will be saved for when you return.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div
+                        class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                        <div class="py-8 flex justify-between items-center w-full pr-4">
+                            <h4
+                                class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                Who will I be working with on my projects?</h4>
+                            <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                <div
+                                    class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                </div>
+                                <div
+                                    class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                            <div class="faq-inner overflow-hidden">
+                                <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                    You will be paired directly with our senior designers and motion experts,
+                                    ensuring high-quality output without any intermediate friction.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 5 -->
+                    <div
+                        class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                        <div class="py-8 flex justify-between items-center w-full pr-4">
+                            <h4
+                                class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                How do I get started with Studio?</h4>
+                            <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                <div
+                                    class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                </div>
+                                <div
+                                    class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                            <div class="faq-inner overflow-hidden">
+                                <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                    Book a discovery call with our team. Once we align on your goals, we'll set up
+                                    your dashboard so you can start submitting requests immediately.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 6 -->
+                    <div
+                        class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5 border-b-0">
+                        <div class="py-8 flex justify-between items-center w-full pr-4">
+                            <h4
+                                class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                How do revisions work?</h4>
+                            <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                <div
+                                    class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                </div>
+                                <div
+                                    class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                            <div class="faq-inner overflow-hidden">
+                                <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                    Revisions are completely unlimited. We refine the work continuously until you
+                                    are 100% satisfied with the final result.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Info & Image -->
+            <div class="lg:w-5/12 flex flex-col pt-4 lg:pt-20 lg:pl-12">
+                <div class="w-full aspect-[16/9] rounded mb-12 overflow-hidden relative shadow-2xl">
+                    <video src="https://videos.pexels.com/video-files/15200532/15200532-uhd_2560_1440_30fps.mp4"
+                        autoplay loop muted playsinline class="object-cover w-full h-full scale-[1.02]">
+                    </video>
+                </div>
+                <div class="w-full">
+                    <h3 class="text-2xl md:text-3xl font-light text-white mb-4 tracking-tight leading-tight">
+                        Still looking for answers or need a good chat?
+                    </h3>
+                    <p class="text-gray-400 font-display text-sm leading-relaxed font-light">
+                        Our team will guide you through our design process, project specifications and cost
+                        estimate.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </section><!-- /FAQ Section -->
+
+    <!-- =============================================
+         TESTIMONIALS — Infinite auto-scroll marquee
+         Dark mode | Hover to expand text
+    ============================================= -->
+    <section id="testimonials" class="relative bg-[#0A0A0A] py-24 md:py-32 overflow-hidden border-t border-white/5">
+
+        <!-- Grain noise overlay -->
+        <div class="absolute inset-0 pointer-events-none z-0"
+            style="opacity:0.055;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix type=%22saturate%22 values=%220%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');background-size:200px">
+        </div>
+
+        <!-- Soft red ambient glow top-center -->
+        <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[500px] pointer-events-none z-0"
+            style="background:radial-gradient(ellipse,rgba(255,46,46,0.07) 0%,transparent 65%)"></div>
+
+        <!-- Section heading -->
+        <div class="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 mb-20">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+                <div>
+                    <p class="font-mono text-xs text-[#ff2e2e] uppercase tracking-[0.35em] mb-5">Client Testimonials</p>
+                    <h2 class="text-4xl sm:text-5xl md:text-[64px] font-bold text-white tracking-tight leading-[1.0]">
+                        Supporting client<br>
+                        <em class="font-light text-white/35 not-italic">experiences</em>
+                    </h2>
+                </div>
+                <p class="text-[#555] text-sm leading-relaxed max-w-[260px] md:text-right font-light">
+                    Become our next<br>success story.
+                </p>
+            </div>
+        </div>
+
+        <!-- Marquee wrapper with fade edges -->
+        <div class="relative z-10">
+            <div class="pointer-events-none absolute left-0 top-0 h-full w-32 z-10"
+                style="background:linear-gradient(to right,#0A0A0A 0%,transparent 100%)"></div>
+            <div class="pointer-events-none absolute right-0 top-0 h-full w-32 z-10"
+                style="background:linear-gradient(to left,#0A0A0A 0%,transparent 100%)"></div>
+
+            <div class="testimonials-marquee-outer overflow-hidden">
+                <div class="testimonials-marquee-track flex gap-6 pb-4" id="testimonials-marquee">
+
+                    <!-- Card 1 -->
+                    <div
+                        class="testimonial-mcard flex-shrink-0 w-[400px] bg-[#0f0f0f] border border-white/[0.07] rounded-2xl p-8 flex flex-col gap-5 cursor-default">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-14 h-14 rounded-full overflow-hidden border-2 border-[#ff2e2e]/25 flex-shrink-0 bg-[#1a1a1a]">
+                                <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop"
+                                    alt="Alex K." class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="t-name text-white font-bold text-sm tracking-wide" style="transition:color 0.3s ease">Alex K.</p>
+                                <p class="text-[#888] text-xs font-mono uppercase tracking-widest mt-0.5">Creative
+                                    Director,
+                                    Neon Labs</p>
+                            </div>
+                        </div>
+                        <div class="t-quote text-[#ff2e2e]/55 text-6xl font-serif leading-none select-none -mb-2" style="transition:opacity 0.3s ease">&ldquo;</div>
+                        <p class="testimonial-mcard-text text-[#aaa] font-light leading-relaxed">
+                            The motion identity they built transformed how our audience perceives us. Every frame felt
+                            intentional and cinematic — nothing short of exceptional.
+                        </p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div
+                        class="testimonial-mcard flex-shrink-0 w-[400px] bg-[#0f0f0f] border border-white/[0.07] rounded-2xl p-8 flex flex-col gap-5 cursor-default">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-14 h-14 rounded-full overflow-hidden border-2 border-[#ff2e2e]/25 flex-shrink-0 bg-[#1a1a1a]">
+                                <img src="https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop"
+                                    alt="Maya S." class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="t-name text-white font-bold text-sm tracking-wide" style="transition:color 0.3s ease">Maya S.</p>
+                                <p class="text-[#888] text-xs font-mono uppercase tracking-widest mt-0.5">Head of Brand,
+                                    Orbit Co.</p>
+                            </div>
+                        </div>
+                        <div class="t-quote text-[#ff2e2e]/55 text-6xl font-serif leading-none select-none -mb-2" style="transition:opacity 0.3s ease">&ldquo;</div>
+                        <p class="testimonial-mcard-text text-[#aaa] font-light leading-relaxed">
+                            Working with Studio is unlike anything else. The 3D work they produced for our campaign was
+                            breathtaking — clients were completely speechless.
+                        </p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div
+                        class="testimonial-mcard flex-shrink-0 w-[400px] bg-[#0f0f0f] border border-white/[0.07] rounded-2xl p-8 flex flex-col gap-5 cursor-default">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-14 h-14 rounded-full overflow-hidden border-2 border-[#ff2e2e]/25 flex-shrink-0 bg-[#1a1a1a]">
+                                <img src="https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop"
+                                    alt="James L." class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="t-name text-white font-bold text-sm tracking-wide" style="transition:color 0.3s ease">James L.</p>
+                                <p class="text-[#888] text-xs font-mono uppercase tracking-widest mt-0.5">CEO, Hollow
+                                    Signal
+                                </p>
+                            </div>
+                        </div>
+                        <div class="t-quote text-[#ff2e2e]/55 text-6xl font-serif leading-none select-none -mb-2" style="transition:opacity 0.3s ease">&ldquo;</div>
+                        <p class="testimonial-mcard-text text-[#aaa] font-light leading-relaxed">
+                            From concept to delivery in record time. The experience design work was flawless — every
+                            single
+                            detail considered, nothing overlooked.
+                        </p>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div
+                        class="testimonial-mcard flex-shrink-0 w-[400px] bg-[#0f0f0f] border border-white/[0.07] rounded-2xl p-8 flex flex-col gap-5 cursor-default">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-14 h-14 rounded-full overflow-hidden border-2 border-[#ff2e2e]/25 flex-shrink-0 bg-[#1a1a1a]">
+                                <img src="https://images.pexels.com/photos/1197132/pexels-photo-1197132.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop"
+                                    alt="Ryo C." class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="t-name text-white font-bold text-sm tracking-wide" style="transition:color 0.3s ease">Ryo C.</p>
+                                <p class="text-[#888] text-xs font-mono uppercase tracking-widest mt-0.5">Marketing
+                                    Lead,
+                                    Phantom Arc</p>
+                            </div>
+                        </div>
+                        <div class="t-quote text-[#ff2e2e]/55 text-6xl font-serif leading-none select-none -mb-2" style="transition:opacity 0.3s ease">&ldquo;</div>
+                        <p class="testimonial-mcard-text text-[#aaa] font-light leading-relaxed">
+                            Our brand went from invisible to iconic. The VFX work for our launch video hit 2M views in
+                            the
+                            first week. Pure, undeniable fire.
+                        </p>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div
+                        class="testimonial-mcard flex-shrink-0 w-[400px] bg-[#0f0f0f] border border-white/[0.07] rounded-2xl p-8 flex flex-col gap-5 cursor-default">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-14 h-14 rounded-full overflow-hidden border-2 border-[#ff2e2e]/25 flex-shrink-0 bg-[#1a1a1a]">
+                                <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop"
+                                    alt="Sara P." class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="t-name text-white font-bold text-sm tracking-wide" style="transition:color 0.3s ease">Sara P.</p>
+                                <p class="text-[#888] text-xs font-mono uppercase tracking-widest mt-0.5">Founder, Lumen
+                                    Studio</p>
+                            </div>
+                        </div>
+                        <div class="t-quote text-[#ff2e2e]/55 text-6xl font-serif leading-none select-none -mb-2" style="transition:opacity 0.3s ease">&ldquo;</div>
+                        <p class="testimonial-mcard-text text-[#aaa] font-light leading-relaxed">
+                            Truly cinematic output. They don't just design — they craft visual language. Our redesign
+                            increased conversion by 38% in the first month.
+                        </p>
+                    </div>
+
+                    <!-- Card 6 -->
+                    <div
+                        class="testimonial-mcard flex-shrink-0 w-[400px] bg-[#0f0f0f] border border-white/[0.07] rounded-2xl p-8 flex flex-col gap-5 cursor-default">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-14 h-14 rounded-full overflow-hidden border-2 border-[#ff2e2e]/25 flex-shrink-0 bg-[#1a1a1a]">
+                                <img src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop"
+                                    alt="Daniel M." class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="t-name text-white font-bold text-sm tracking-wide" style="transition:color 0.3s ease">Daniel M.</p>
+                                <p class="text-[#888] text-xs font-mono uppercase tracking-widest mt-0.5">Art Director,
+                                    Apex
+                                    Films</p>
+                            </div>
+                        </div>
+                        <div class="t-quote text-[#ff2e2e]/55 text-6xl font-serif leading-none select-none -mb-2" style="transition:opacity 0.3s ease">&ldquo;</div>
+                        <p class="testimonial-mcard-text text-[#aaa] font-light leading-relaxed">
+                            The quality of their direction rivals top-tier production houses. Every deliverable was
+                            polished, precise, and delivered ahead of schedule.
+                        </p>
+                    </div>
+
+                </div><!-- /track -->
+            </div><!-- /outer -->
+        </div><!-- /relative -->
+
+    </section>
+
+    <style>
+        /* Seamless infinite marquee */
+        @keyframes testimonial-marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .testimonials-marquee-track {
+            animation: testimonial-marquee 45s linear infinite;
+            width: max-content;
+            will-change: transform;
+        }
+
+        /* Pause when hovering ANY card */
+        .testimonials-marquee-outer:hover .testimonials-marquee-track {
+            animation-play-state: paused;
+        }
+
+        /* -- Card base --------------------------------------- */
+        .testimonial-mcard {
+            position: relative;
+            overflow: hidden;
+            opacity: 1;
+            transition:
+                opacity 0.4s ease,
+                transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.5s ease,
+                background 0.35s ease;
+        }
+
+        /* Thin red accent line — hidden by default */
+        .testimonial-mcard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ff2e2e;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* -- Spotlight: dim ALL cards when strip is hovered -- */
+        .testimonials-marquee-outer:hover .testimonial-mcard {
+            opacity: 0.35;
+            transform: scale(0.98);
+        }
+
+        /* Re-illuminate the directly hovered card */
+        .testimonials-marquee-outer:hover .testimonial-mcard:hover {
+            opacity: 1;
+            transform: scale(1.01);
+            background: #141414;
+            box-shadow:
+                0 16px 48px rgba(0, 0, 0, 0.5),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Reveal accent line on hovered card */
+        .testimonial-mcard:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* -- Text: color-only shift, zero reflow ----------- */
+        .testimonial-mcard-text {
+            font-size: 0.9375rem;
+            line-height: 1.75;
+            color: #888;
+            transition: color 0.35s ease;
+        }
+
+        .testimonial-mcard:hover .testimonial-mcard-text {
+            color: #c8c8c8;
+        }
+
+        /* Quote glyph: opacity brightens subtly */
+        .testimonial-mcard:hover .t-quote {
+            opacity: 0.45;
+        }
+
+        /* Name: brightens to white */
+        .testimonial-mcard:hover .t-name {
+            color: #ffffff;
+        }
+    </style>
+
+    <script>
+        /* Clone cards for seamless infinite loop (50% translateX trick) */
+        document.addEventListener('DOMContentLoaded', function () {
+            var track = document.getElementById('testimonials-marquee');
+            if (!track) return;
+            var origCards = Array.from(track.children);
+            origCards.forEach(function (card) {
+                var clone = card.cloneNode(true);
+                clone.setAttribute('aria-hidden', 'true');
+                track.appendChild(clone);
+            });
+        });
+    </script>
+    </script>
+
+    <!-- Footer -->
+    <custom-footer></custom-footer>
+    <!-- Scripts -->
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        if (cursor) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            const hoverElements = document.querySelectorAll('a, button, select, .cursor-pointer');
+            hoverElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.width = '60px';
+                    cursor.style.height = '60px';
+                    cursor.style.backgroundColor = '#ff2e2e';
+                    cursor.style.border = 'none';
+                    cursor.style.mixBlendMode = 'normal';
+                    cursor.style.opacity = '0.8';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                    cursor.style.backgroundColor = 'transparent';
+                    cursor.style.border = '2px solid #ff2e2e';
+                    cursor.style.mixBlendMode = 'difference';
+                    cursor.style.opacity = '1';
+                });
+            });
+        }
+
+        // Scroll Reveal
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal:not(.active)');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+            reveals.forEach(el => observer.observe(el));
+        });
+
+        // FAQ Accordion Logic — same as homepage (Native CSS Grid)
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const content = item.querySelector('.faq-content');
+                    const lineTop = item.querySelector('.line-top');
+                    const lineBottom = item.querySelector('.line-bottom');
+                    const isOpen = item.classList.contains('is-open');
+
+                    // Close all others
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('is-open')) {
+                            otherItem.classList.remove('is-open');
+                            otherItem.querySelector('.faq-content').classList.remove('grid-rows-[1fr]');
+                            otherItem.querySelector('.faq-content').classList.add('grid-rows-[0fr]');
+                            const ot = otherItem.querySelector('.line-top');
+                            const ob = otherItem.querySelector('.line-bottom');
+                            ot.style.top = '0px';
+                            ot.style.transform = 'translateY(0) rotate(0deg)';
+                            ob.style.bottom = '0px';
+                            ob.style.transform = 'translateY(0) rotate(0deg)';
+                        }
+                    });
+
+                    if (isOpen) {
+                        item.classList.remove('is-open');
+                        content.classList.remove('grid-rows-[1fr]');
+                        content.classList.add('grid-rows-[0fr]');
+                        lineTop.style.top = '0px';
+                        lineTop.style.transform = 'translateY(0) rotate(0deg)';
+                        lineBottom.style.bottom = '0px';
+                        lineBottom.style.transform = 'translateY(0) rotate(0deg)';
+                    } else {
+                        item.classList.add('is-open');
+                        content.classList.remove('grid-rows-[0fr]');
+                        content.classList.add('grid-rows-[1fr]');
+                        lineTop.style.top = '50%';
+                        lineTop.style.transform = 'translateY(-50%) rotate(45deg)';
+                        lineBottom.style.bottom = '50%';
+                        lineBottom.style.transform = 'translateY(50%) rotate(-45deg)';
+                    }
+                });
+            });
+        });
+
+        // Form Submit
+        function handleSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const feedback = document.getElementById('form-feedback');
+
+            if (!name || !email) {
+                feedback.textContent = 'â†’ Please fill in at least your name and email.';
+                feedback.classList.remove('hidden');
+                return;
+            }
+
+            feedback.textContent = 'âœ“ Message sent! We\'ll be in touch within 24 hours.';
+            feedback.classList.remove('hidden');
+            document.getElementById('contact-form').reset();
+        }
+    </script>
+</body>
+
+</html>

@@ -40,6 +40,23 @@
                     },
                     backgroundImage: {
                         'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.1%22/%3E%3C/svg%3E')",
+                    },
+                    animation: {
+                        'noise': 'noise 0.2s infinite steps(2)',
+                    },
+                    keyframes: {
+                        noise: {
+                            '0%, 100%': { transform: 'translate(0, 0)' },
+                            '10%': { transform: 'translate(-5%, -5%)' },
+                            '20%': { transform: 'translate(-10%, 5%)' },
+                            '30%': { transform: 'translate(5%, -10%)' },
+                            '40%': { transform: 'translate(-5%, 15%)' },
+                            '50%': { transform: 'translate(-10%, 5%)' },
+                            '60%': { transform: 'translate(15%, 0)' },
+                            '70%': { transform: 'translate(0, 15%)' },
+                            '80%': { transform: 'translate(3%, 35%)' },
+                            '90%': { transform: 'translate(-10%, 10%)' },
+                        }
                     }
                 },
             },
@@ -76,58 +93,79 @@
             border: none;
         }
 
-        /* Hide scrollbar for horizontal scroll section */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        /* Reveal animation styles */
+        .js-scroll-img {
+            transform: scale(1.05);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        .scroll-project.is-visible .js-scroll-img {
+            transform: scale(1);
         }
 
-        /* Subtle noise overlay */
-        .noise-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.07;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+        .js-scroll-content {
+            transform: translateY(40px);
+            opacity: 0;
+            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s,
+                opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+        }
+
+        .scroll-project.is-visible .js-scroll-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+
+        /* Cinematic Metrics Styles */
+        .metric-container {
+            transform: translateY(80px) scale(0.95);
+            opacity: 0;
+            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform, opacity;
+        }
+
+        .metric-container.is-visible {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .metric-number {
+            font-variant-numeric: tabular-nums;
+            display: inline-block;
+            min-width: 2ch;
+        }
+
+        /* FAQ Smooth Accordion */
+        .faq-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .faq-item.is-open .faq-content {
+            grid-template-rows: 1fr;
+        }
+
+        .faq-inner {
+            overflow: hidden;
         }
     </style>
+    <script src="js/components.js"></script>
 </head>
 
 <body
     class="bg-background-light dark:bg-background-dark font-display text-white overflow-x-hidden selection:bg-primary selection:text-white">
-    <!-- Noise Overlay -->
-    <div class="noise-overlay"></div>
+    <!-- Global Static Noise Overlay -->
+    <div class="fixed inset-0 z-50 pointer-events-none opacity-[0.06]"
+        style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);">
+    </div>
     <!-- Custom Cursor Element (Simulated for this static output) -->
     <div class="custom-cursor hidden md:block" style="top: 50%; left: 50%;"></div>
     <!-- Main Container -->
     <div class="relative min-h-screen flex flex-col w-full">
         <!-- Header -->
-        <header
-            class="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-6 md:px-12 mix-blend-difference">
-            <div class="flex items-center gap-2 group cursor-pointer">
-                <span class="material-symbols-outlined text-3xl text-primary animate-pulse">emergency</span>
-                <span class="font-bold text-xl tracking-tighter">STUDIO</span>
-            </div>
-            <nav class="hidden md:flex items-center gap-12">
-                <a class="text-sm font-mono uppercase tracking-widest hover:text-primary transition-colors"
-                    href="#">Work</a>
-                <a class="text-sm font-mono uppercase tracking-widest hover:text-primary transition-colors"
-                    href="#">Studio</a>
-                <a class="text-sm font-mono uppercase tracking-widest hover:text-primary transition-colors"
-                    href="#">Contact</a>
-            </nav>
-            <button class="md:hidden text-white">
-                <span class="material-symbols-outlined text-3xl">menu</span>
-            </button>
-        </header>
+        <custom-navbar></custom-navbar>
         <!-- Hero Section -->
         <main class="flex-grow flex flex-col justify-center px-6 md:px-12 pt-32 pb-20 min-h-screen relative">
             <div class="flex flex-col max-w-[1400px] mx-auto w-full z-10">
@@ -136,10 +174,10 @@
                     class="text-[clamp(3.5rem,10vw,12rem)] font-black leading-[0.85] tracking-[-0.04em] uppercase text-white mb-12 select-none">
                     <span class="block hover:translate-x-4 hover:text-primary transition-all duration-500 ease-out">We
                         Breathe</span>
-                    <span class="block hover:text-primary transition-colors duration-300">/ Motion /</span>
+                    <span class="block hover:text-primary transition-colors duration-300">Motion</span>
                     <span
                         class="block text-right hover:-translate-x-4 hover:text-primary transition-all duration-500 ease-out">Into
-                        Code</span>
+                        / Code /</span>
                 </h1>
                 <!-- Sub-info -->
                 <div
@@ -165,96 +203,228 @@
                 class="absolute right-0 bottom-0 w-1/3 h-1/3 bg-gradient-to-t from-primary/10 to-transparent blur-3xl rounded-full pointer-events-none">
             </div>
         </main>
-        <!-- Selected Work: Horizontal Scroll -->
-        <section class="py-24 border-t border-white/10 w-full overflow-hidden bg-background-dark relative z-10">
-            <div class="px-6 md:px-12 mb-12 flex justify-between items-end">
-                <h2 class="text-4xl md:text-6xl font-black tracking-tighter uppercase">Selected Work</h2>
-                <div class="hidden md:flex gap-4">
-                    <button
-                        class="size-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
-                        <span class="material-symbols-outlined">arrow_back</span>
-                    </button>
-                    <button
-                        class="size-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors">
-                        <span class="material-symbols-outlined">arrow_forward</span>
-                    </button>
+        <!-- Selected Work: Sticky Parallax Reveal -->
+        <section class="w-full bg-background-dark relative z-10">
+            <!-- Project 1: Nike -->
+            <div class="scroll-project sticky top-0 h-screen w-full overflow-hidden group cursor-pointer"
+                onclick="window.location.href='nike-air-max.html'">
+                <!-- Background Image -->
+                <div class="absolute inset-0 bg-cover bg-center js-scroll-img"
+                    style="background-image: url('https://images.pexels.com/photos/18946650/pexels-photo-18946650.jpeg');">
+                </div>
+                <!-- Dark Overlay: Darker at top and bottom for legibility -->
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/90 via-[#0A0A0A]/30 to-[#0A0A0A]/90 opacity-90 transition-opacity duration-1000 group-hover:opacity-100">
+                </div>
+
+                <!-- Content Container -->
+                <div
+                    class="absolute inset-0 flex flex-col justify-between p-8 md:p-12 lg:p-16 z-20 pointer-events-none">
+                    <!-- Top Row: Title -->
+                    <div class="w-full max-w-[1400px] mx-auto mt-24 md:mt-32">
+                        <h3
+                            class="js-scroll-content text-[clamp(2.5rem,5.5vw,5.5rem)] font-black text-white tracking-tighter uppercase leading-[0.85] pointer-events-auto max-w-3xl">
+                            Nike Air<br />Max 2025
+                        </h3>
+                    </div>
+                    <!-- Bottom Row: Subtitle & Badge -->
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 w-full max-w-[1400px] mx-auto js-scroll-content md:mb-8">
+                        <p
+                            class="font-mono text-sm text-gray-400 uppercase tracking-widest bg-black/50 px-4 py-2 w-max rounded backdrop-blur-sm border border-white/5 pointer-events-auto">
+                            Creative Direction • 3D
+                        </p>
+                        <div
+                            class="bg-black/60 backdrop-blur-md px-6 py-3 rounded border border-white/10 shrink-0 pointer-events-auto w-max">
+                            <span class="font-mono text-sm uppercase tracking-widest text-[#ff2e2e]">2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side Arrow -->
+                <div
+                    class="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 z-30 js-scroll-content pointer-events-none">
+                    <div
+                        class="size-16 md:size-24 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-[#ff2e2e] group-hover:border-[#ff2e2e] group-hover:text-white transition-all duration-500 pointer-events-auto cursor-pointer">
+                        <span
+                            class="material-symbols-outlined text-4xl md:text-5xl -rotate-45 group-hover:rotate-0 transition-transform duration-500">arrow_forward</span>
+                    </div>
                 </div>
             </div>
-            <!-- Horizontal Gallery -->
-            <div class="flex overflow-x-auto gap-8 px-6 md:px-12 pb-12 no-scrollbar snap-x snap-mandatory">
-                <!-- Project 1 -->
-                <div class="min-w-[85vw] md:min-w-[60vw] snap-center group cursor-pointer relative">
-                    <div class="aspect-video w-full overflow-hidden rounded bg-gray-900 relative">
-                        <div
-                            class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10">
-                        </div>
-                        <div class="w-full h-full bg-cover bg-center transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                            data-alt="Neon cyberpunk city street with rain"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDWgeokb7DrNUBE4Pa-PbgH963DVaUcZlwlXzcd2FpORDuDblEGXg9j8fQyDwkadEgkZkOgvipizAN_tVS-aTOhdqN-F8xbM6Z_edgbDIdghPKHSHrlE58FwPT-y9euYuWaIWfgk2izuXimZjouY1D6_BmG328nxQkIaNMcmRGMSyAgG5mEKhi_FLxwOWt8jdlvoKJoxfd4zvmNqNCCkDhMSWIJzcXDCeO0KLOOdZlmC6g1i3fmnJianWtU_3AvmD6R077trak73Q");'>
-                        </div>
-                        <!-- Floating Metadata -->
-                        <div
-                            class="absolute top-6 right-6 z-20 bg-black/50 backdrop-blur-md px-4 py-2 rounded border border-white/10">
-                            <span class="font-mono text-xs text-primary uppercase">2025</span>
-                        </div>
+
+            <!-- Project 2: Spotify Wrapped -->
+            <div class="scroll-project sticky top-0 h-screen w-full overflow-hidden group cursor-pointer"
+                onclick="window.location.href='spotify-wrapped.html'">
+                <div class="absolute inset-0 bg-cover bg-center js-scroll-img"
+                    style="background-image: url('https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg');">
+                </div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/90 via-[#0A0A0A]/30 to-[#0A0A0A]/90 opacity-90 transition-opacity duration-1000 group-hover:opacity-100">
+                </div>
+
+                <div
+                    class="absolute inset-0 flex flex-col justify-between p-8 md:p-12 lg:p-16 z-20 pointer-events-none">
+                    <div class="w-full max-w-[1400px] mx-auto mt-24 md:mt-32">
+                        <h3
+                            class="js-scroll-content text-[clamp(2.5rem,5.5vw,5.5rem)] font-black text-white tracking-tighter uppercase leading-[0.85] pointer-events-auto max-w-3xl">
+                            Spotify<br />Wrapped
+                        </h3>
                     </div>
-                    <div class="flex justify-between items-start mt-6 border-b border-white/10 pb-6">
-                        <div>
-                            <h3 class="text-2xl md:text-3xl font-bold mb-1 group-hover:text-primary transition-colors">
-                                Nike Air Max 2025</h3>
-                            <p class="font-mono text-sm text-gray-400">Creative Direction / 3D</p>
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 w-full max-w-[1400px] mx-auto js-scroll-content md:mb-8">
+                        <p
+                            class="font-mono text-sm text-gray-400 uppercase tracking-widest bg-black/50 px-4 py-2 w-max rounded backdrop-blur-sm border border-white/5 pointer-events-auto">
+                            Motion Identity • Data Viz
+                        </p>
+                        <div
+                            class="bg-black/60 backdrop-blur-md px-6 py-3 rounded border border-white/10 shrink-0 pointer-events-auto w-max">
+                            <span class="font-mono text-sm uppercase tracking-widest text-[#ff2e2e]">2024</span>
                         </div>
-                        <span
-                            class="material-symbols-outlined text-4xl -rotate-45 group-hover:rotate-0 transition-transform duration-300 text-white/50 group-hover:text-primary">arrow_forward</span>
                     </div>
                 </div>
-                <!-- Project 2 -->
-                <div class="min-w-[85vw] md:min-w-[60vw] snap-center group cursor-pointer relative">
-                    <div class="aspect-video w-full overflow-hidden rounded bg-gray-900 relative">
-                        <div
-                            class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10">
-                        </div>
-                        <div class="w-full h-full bg-cover bg-center transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                            data-alt="Abstract fluid liquid gradient art purple and blue"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAujoVvzvqsukIY5rKP6a7mb2-MntmveU2J14HS_oHrTUGWBsj7vJCJbFb3W72Yg_EKKPOJwS_sL92BMjGByBL1qUqtncPo0SMhHBe0ubr9VMVOpENRTlvs0BGqnA1OKLbGLed9yCQtLq3nfQnpdZf8JGXV9_iUSSwMtQ8bVEhW_e_A73ETxMmBPDz1Lzhv8SWn8JKOPx2bavGqZPE82b255oxVlzPXcBywkQpB20ZMQIHcLPN_zBnkrt5EIKXQifwDFS_1bwqflg");'>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-start mt-6 border-b border-white/10 pb-6">
-                        <div>
-                            <h3 class="text-2xl md:text-3xl font-bold mb-1 group-hover:text-primary transition-colors">
-                                Spotify Wrapped</h3>
-                            <p class="font-mono text-sm text-gray-400">Motion Identity / Data Viz</p>
-                        </div>
+
+                <div
+                    class="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 z-30 js-scroll-content pointer-events-none">
+                    <div
+                        class="size-16 md:size-24 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-[#ff2e2e] group-hover:border-[#ff2e2e] group-hover:text-white transition-all duration-500 pointer-events-auto cursor-pointer">
                         <span
-                            class="material-symbols-outlined text-4xl -rotate-45 group-hover:rotate-0 transition-transform duration-300 text-white/50 group-hover:text-primary">arrow_forward</span>
+                            class="material-symbols-outlined text-4xl md:text-5xl -rotate-45 group-hover:rotate-0 transition-transform duration-500">arrow_forward</span>
                     </div>
                 </div>
-                <!-- Project 3 -->
-                <div class="min-w-[85vw] md:min-w-[60vw] snap-center group cursor-pointer relative">
-                    <div class="aspect-video w-full overflow-hidden rounded bg-gray-900 relative">
+            </div>
+
+            <!-- Project 3: Cyberpunk 2077 UI -->
+            <div class="scroll-project sticky top-0 h-screen w-full overflow-hidden group cursor-pointer"
+                onclick="window.location.href='cyberpunk-2077-ui.html'">
+                <div class="absolute inset-0 bg-cover bg-center js-scroll-img"
+                    style="background-image: url('https://images.pexels.com/photos/3165335/pexels-photo-3165335.jpeg');">
+                </div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/90 via-[#0A0A0A]/30 to-[#0A0A0A]/90 opacity-90 transition-opacity duration-1000 group-hover:opacity-100">
+                </div>
+
+                <div
+                    class="absolute inset-0 flex flex-col justify-between p-8 md:p-12 lg:p-16 z-20 pointer-events-none">
+                    <div class="w-full max-w-[1400px] mx-auto mt-24 md:mt-32">
+                        <h3
+                            class="js-scroll-content text-[clamp(2.5rem,5.5vw,5.5rem)] font-black text-white tracking-tighter uppercase leading-[0.85] pointer-events-auto max-w-3xl">
+                            Cyberpunk<br />2077 UI
+                        </h3>
+                    </div>
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 w-full max-w-[1400px] mx-auto js-scroll-content md:mb-8">
+                        <p
+                            class="font-mono text-sm text-gray-400 uppercase tracking-widest bg-black/50 px-4 py-2 w-max rounded backdrop-blur-sm border border-white/5 pointer-events-auto">
+                            Interface Design • Animation
+                        </p>
                         <div
-                            class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10">
-                        </div>
-                        <div class="w-full h-full bg-cover bg-center transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                            data-alt="Futuristic glitch art aesthetic screen"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDXbxyiC5WJkRcD-nzrb3Ri30hIBpjhPAQL8nfoEtSDEawELnwCqlnfbOk_NB3iQp75W2osmrHxN-BI4Uth3j9clFKI8vrREEY9N6zRww1H2Qg5S7zXrIVy8Zckm5Aqi0goZ78vIzxUziHOZrBTH8akli-P7J_pctxWwi_WCXoWi8ZB-grgqnGWAx4-XWmMGoHZk_TfVqcO4mkAArfZcEI3oJ0QW814R5wX1pXHq8U9gDvhb-lyplCqTPW2mncckeIHId3rWWbUZw");'>
-                        </div>
-                        <div class="absolute bottom-6 left-6 z-20 bg-primary px-4 py-2 rounded">
-                            <span class="font-mono text-xs text-white uppercase font-bold">Featured</span>
+                            class="bg-[#ff2e2e] px-6 py-3 rounded border border-white/10 shrink-0 pointer-events-auto w-max">
+                            <span
+                                class="font-mono text-sm uppercase tracking-widest text-white font-bold">Featured</span>
                         </div>
                     </div>
-                    <div class="flex justify-between items-start mt-6 border-b border-white/10 pb-6">
-                        <div>
-                            <h3 class="text-2xl md:text-3xl font-bold mb-1 group-hover:text-primary transition-colors">
-                                Cyberpunk 2077 UI</h3>
-                            <p class="font-mono text-sm text-gray-400">Interface Design / Animation</p>
-                        </div>
+                </div>
+
+                <div
+                    class="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 z-30 js-scroll-content pointer-events-none">
+                    <div
+                        class="size-16 md:size-24 rounded-full border border-white/20 flex items-center justify-center text-white/50 group-hover:bg-[#ff2e2e] group-hover:border-[#ff2e2e] group-hover:text-white transition-all duration-500 pointer-events-auto cursor-pointer">
                         <span
-                            class="material-symbols-outlined text-4xl -rotate-45 group-hover:rotate-0 transition-transform duration-300 text-white/50 group-hover:text-primary">arrow_forward</span>
+                            class="material-symbols-outlined text-4xl md:text-5xl -rotate-45 group-hover:rotate-0 transition-transform duration-500">arrow_forward</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spacer to allow the last project to stick for a moment before scrolling away -->
+            <div class="h-[75vh] w-full pointer-events-none"></div>
+        </section>
+
+        <!-- Our Achievements Section -->
+        <section class="py-24 px-6 md:px-12 bg-[#0A0A0A] relative z-20 w-full text-white border-t border-white/5">
+            <div class="max-w-[1400px] mx-auto w-full">
+                <div class="flex items-center gap-6 mb-20 pb-12 border-b border-white/10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-4 h-4 rounded-full border-[3px] border-[#ff2e2e]"></div>
+                        <h2 class="text-3xl md:text-4xl font-display font-medium tracking-tight">Our Achievements</h2>
+                    </div>
+                    <div class="w-px h-8 bg-white/20 hidden md:block"></div>
+                    <span class="text-sm md:text-base text-gray-400 font-mono tracking-wide hidden md:block">metrics &
+                        milestones</span>
+                </div>
+
+                <div class="w-full">
+                    <h3
+                        class="text-5xl md:text-[3.75rem] lg:text-[4.5rem] font-bold tracking-tight leading-[1.05] mb-6 font-display">
+                        <span class="whitespace-nowrap">Behind every statistic pulses</span><br>
+                        <span class="whitespace-nowrap">a human story</span>
+                    </h3>
+                    <p class="text-xl md:text-2xl text-gray-300 font-light font-display">
+                        Transforming industries, pixel by perfect pixel
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cinematic Performance Matrix -->
+        <section
+            class="metrics-section pt-12 pb-24 md:pt-16 md:pb-32 px-6 md:px-12 bg-[#0A0A0A] w-full relative z-20 overflow-hidden border-t border-white/5">
+            <div class="max-w-[1400px] mx-auto relative z-10 w-full flex flex-col items-center">
+
+                <h2
+                    class="text-xl md:text-2xl font-mono text-[#ff2e2e] uppercase tracking-[0.2em] mb-16 md:mb-24 text-center">
+                    Performance Snapshot
+                </h2>
+
+                <!-- Inner grid with auto columns spacing out evenly -->
+                <div
+                    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 w-full max-w-7xl divide-y md:divide-y-0 md:divide-x divide-white/10 text-center">
+                    <!-- Stat 1 -->
+                    <div class="metric-container flex flex-col items-center justify-start group relative p-6 lg:p-4">
+                        <span
+                            class="font-display text-[10px] md:text-xs text-gray-500 uppercase tracking-widest mb-4 leading-relaxed">Projects<br />Completed</span>
+                        <span
+                            class="metric-number text-6xl md:text-7xl font-normal text-[#EAEAEA] tracking-tight leading-none"
+                            data-target="67" data-suffix="">0</span>
+                    </div>
+                    <!-- Stat 2 -->
+                    <div class="metric-container flex flex-col items-center justify-start group relative p-6 lg:p-4">
+                        <span
+                            class="font-display text-[10px] md:text-xs text-gray-500 uppercase tracking-widest mb-4 leading-relaxed">Clients
+                            Served<br />Worldwide</span>
+                        <span
+                            class="metric-number text-6xl md:text-7xl font-normal text-[#EAEAEA] tracking-tight leading-none"
+                            data-target="43" data-suffix="+">0</span>
+                    </div>
+                    <!-- Stat 3 -->
+                    <div class="metric-container flex flex-col items-center justify-start group relative p-6 lg:p-4">
+                        <span
+                            class="font-display text-[10px] md:text-xs text-gray-500 uppercase tracking-widest mb-4 leading-relaxed">Design
+                            Awards<br />& Recognitions</span>
+                        <span
+                            class="metric-number text-6xl md:text-7xl font-normal text-[#EAEAEA] tracking-tight leading-none"
+                            data-target="12" data-suffix="+">0</span>
+                    </div>
+                    <!-- Stat 4 -->
+                    <div class="metric-container flex flex-col items-center justify-start group relative p-6 lg:p-4">
+                        <span
+                            class="font-display text-[10px] md:text-xs text-gray-500 uppercase tracking-widest mb-4 leading-relaxed">Campaigns<br />Launched</span>
+                        <span
+                            class="metric-number text-6xl md:text-7xl font-normal text-[#EAEAEA] tracking-tight leading-none"
+                            data-target="16" data-suffix="+">0</span>
+                    </div>
+                    <!-- Stat 5 -->
+                    <div class="metric-container flex flex-col items-center justify-start group relative p-6 lg:p-4">
+                        <span
+                            class="font-display text-[10px] md:text-xs text-gray-500 uppercase tracking-widest mb-4 leading-relaxed">Colours
+                            Not<br />Used in 2025</span>
+                        <span
+                            class="metric-number text-6xl md:text-7xl font-normal text-[#EAEAEA] tracking-tight leading-none"
+                            data-target="3" data-suffix="">0</span>
                     </div>
                 </div>
             </div>
         </section>
+
         <!-- Capabilities: Typographic List -->
         <section class="py-24 px-6 md:px-12 bg-[#050505] relative overflow-hidden">
             <!-- Background Accent -->
@@ -346,43 +516,208 @@
                 </div>
             </div>
         </section>
-        <!-- CTA / Footer -->
-        <footer class="bg-primary text-white py-32 px-6 md:px-12 relative overflow-hidden">
-            <!-- Decorative giant text -->
-            <div
-                class="absolute -bottom-20 -right-20 text-[20rem] font-black text-black/10 leading-none select-none pointer-events-none">
-                TALK
-            </div>
-            <div class="max-w-[1400px] mx-auto relative z-10 flex flex-col md:flex-row justify-between items-start">
-                <div class="flex flex-col gap-8 mb-16 md:mb-0">
-                    <h2 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9]">
-                        START A <br />
-                        PROJECT
+
+        <!-- FAQ Section -->
+        <section class="py-24 md:py-32 px-6 md:px-12 bg-[#0A0A0A] relative z-20 border-t border-white/5">
+            <div class="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24 relative z-10 w-full">
+
+                <!-- Left Column: Accordions -->
+                <div class="lg:w-7/12 flex flex-col w-full">
+                    <h2
+                        class="text-sm md:text-base font-mono font-bold text-[#ff2e2e] uppercase tracking-[0.2em] mb-12">
+                        FAQ
                     </h2>
-                    <a class="inline-flex items-center gap-4 text-2xl font-mono border-b-2 border-white pb-2 hover:border-black hover:text-black transition-colors self-start"
-                        href="mailto:hello@studio.com">
-                        hello@studio.com
-                        <span class="material-symbols-outlined">north_east</span>
-                    </a>
-                </div>
-                <div class="flex flex-col gap-12 text-right">
-                    <div class="flex flex-col gap-2">
-                        <span class="font-mono text-sm uppercase opacity-70">Socials</span>
-                        <div class="flex flex-col gap-1 text-lg font-bold">
-                            <a class="hover:text-black transition-colors" href="#">Instagram</a>
-                            <a class="hover:text-black transition-colors" href="#">Vimeo</a>
-                            <a class="hover:text-black transition-colors" href="#">LinkedIn</a>
-                            <a class="hover:text-black transition-colors" href="#">Behance</a>
+
+                    <div class="flex flex-col border-t border-white/10 w-full font-display">
+                        <!-- FAQ Item 1 -->
+                        <div
+                            class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                            <div class="py-8 flex justify-between items-center w-full pr-4">
+                                <h4
+                                    class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                    What can I expect within 48 hours?</h4>
+                                <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                    <div
+                                        class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                    </div>
+                                    <div
+                                        class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                                <div class="faq-inner overflow-hidden">
+                                    <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                        You can expect an initial concept or preliminary response within the first 48
+                                        hours of onboarding, giving you immediate visibility into our design direction.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 2 -->
+                        <div
+                            class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                            <div class="py-8 flex justify-between items-center w-full pr-4">
+                                <h4
+                                    class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                    How does the subscription model work?</h4>
+                                <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                    <div
+                                        class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                    </div>
+                                    <div
+                                        class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                                <div class="faq-inner overflow-hidden">
+                                    <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                        Our subscription model offers unlimited design requests for a flat monthly fee,
+                                        allowing you to submit projects as needed without additional costs.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 3 -->
+                        <div
+                            class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                            <div class="py-8 flex justify-between items-center w-full pr-4">
+                                <h4
+                                    class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                    Can I pause my subscription if needed?</h4>
+                                <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                    <div
+                                        class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                    </div>
+                                    <div
+                                        class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                                <div class="faq-inner overflow-hidden">
+                                    <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                        Yes, you can pause your subscription at any time. Simply notify us before the
+                                        next billing cycle and your remaining days will be saved for when you return.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 4 -->
+                        <div
+                            class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                            <div class="py-8 flex justify-between items-center w-full pr-4">
+                                <h4
+                                    class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                    Who will I be working with on my projects?</h4>
+                                <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                    <div
+                                        class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                    </div>
+                                    <div
+                                        class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                                <div class="faq-inner overflow-hidden">
+                                    <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                        You will be paired directly with our senior designers and motion experts,
+                                        ensuring high-quality output without any intermediate friction.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 5 -->
+                        <div
+                            class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5">
+                            <div class="py-8 flex justify-between items-center w-full pr-4">
+                                <h4
+                                    class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                    How do I get started with Studio?</h4>
+                                <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                    <div
+                                        class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                    </div>
+                                    <div
+                                        class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                                <div class="faq-inner overflow-hidden">
+                                    <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                        Book a discovery call with our team. Once we align on your goals, we'll set up
+                                        your dashboard so you can start submitting requests immediately.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Item 6 -->
+                        <div
+                            class="faq-item border-b border-white/10 group cursor-pointer transition-colors hover:bg-white/5 border-b-0">
+                            <div class="py-8 flex justify-between items-center w-full pr-4">
+                                <h4
+                                    class="text-xl md:text-2xl font-light text-white group-hover:text-[#ff2e2e] transition-colors tracking-tight">
+                                    How do revisions work?</h4>
+                                <div class="relative w-6 h-[8px] flex text-[#ff2e2e] shrink-0 ml-4 faq-icon">
+                                    <div
+                                        class="line-top absolute w-full h-[1.5px] bg-current top-0 transition-all duration-300 origin-center">
+                                    </div>
+                                    <div
+                                        class="line-bottom absolute w-full h-[1.5px] bg-current bottom-0 transition-all duration-300 origin-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="faq-content pr-8 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                                <div class="faq-inner overflow-hidden">
+                                    <p class="pb-8 text-gray-400 text-sm md:text-base leading-relaxed font-light">
+                                        Revisions are completely unlimited. We refine the work continuously until you
+                                        are 100% satisfied with the final result.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex flex-col gap-2">
-                        <span class="font-mono text-sm uppercase opacity-70">Locations</span>
-                        <p class="font-bold">Tokyo / NYC / Remote</p>
-                    </div>
-                    <p class="font-mono text-xs opacity-60 mt-8">© 2024 Studio Experimental Motion.</p>
                 </div>
+
+                <!-- Right Column: Info & Image -->
+                <div class="lg:w-5/12 flex flex-col pt-4 lg:pt-20 lg:pl-12">
+                    <!-- Added pt-20 to push the whole block down, mb-12 to push text down from image -->
+                    <div class="w-full aspect-[16/9] rounded mb-12 overflow-hidden relative shadow-2xl">
+                        <!-- Landscape abstract video -->
+                        <video src="https://videos.pexels.com/video-files/15200532/15200532-uhd_2560_1440_30fps.mp4"
+                            autoplay loop muted playsinline class="object-cover w-full h-full scale-[1.02]">
+                        </video>
+                    </div>
+                    <div class="w-full"> <!-- Removed max-w to align edge-to-edge with landscape video -->
+                        <h3 class="text-2xl md:text-3xl font-light text-white mb-4 tracking-tight leading-tight">
+                            Still looking for answers or need a good chat?
+                        </h3>
+                        <p class="text-gray-400 font-display text-sm leading-relaxed font-light">
+                            Our team will guide you through our design process, project specifications and cost
+                            estimate.
+                        </p>
+                    </div>
+                </div>
+
             </div>
-        </footer>
+        </section>
+
+        <!-- CTA / Footer -->
+        <custom-footer></custom-footer>
     </div>
     <!-- Script to update custom cursor position -->
     <script>
@@ -414,6 +749,205 @@
                 cursor.style.mixBlendMode = 'difference';
                 cursor.style.opacity = '1';
             });
+        });
+
+        // Vertical Scroll Reveal Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const projects = document.querySelectorAll('.scroll-project');
+
+            // Intersection Observer
+            const observerOptions = {
+                root: null, // use viewport
+                margin: '0px',
+                threshold: 0.25 // Trigger when 25% of the section is visible
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Start animation when entering
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        // For sticky sections, reset only when they scroll OUT completely
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, observerOptions);
+
+            projects.forEach(project => {
+                observer.observe(project);
+            });
+
+            // Initialize first project visibility if they land on it right away
+            setTimeout(() => {
+                const scrollY = window.scrollY;
+                if (scrollY < 200 && projects.length > 0) {
+                    projects[0].classList.add('is-visible');
+                }
+            }, 100);
+        });
+        // Cinematic Metrics Animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const metricsSection = document.querySelector('.metrics-section');
+            const metrics = document.querySelectorAll('.metric-container');
+            const numbers = document.querySelectorAll('.metric-number');
+
+            const animateValue = (obj, start, end, duration, format, suffix) => {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    // easeOutCubic
+                    const easeProgress = 1 - Math.pow(1 - progress, 3);
+                    let current = Math.floor(easeProgress * (end - start) + start);
+
+                    obj.innerHTML = current + suffix;
+
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            };
+
+            if (metricsSection) {
+                const metricsObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            // Staggered reveal
+                            metrics.forEach((metric, index) => {
+                                setTimeout(() => {
+                                    metric.classList.add('is-visible');
+                                }, index * 150);
+                            });
+
+                            // Start counting
+                            numbers.forEach((num) => {
+                                if (!num.dataset.animated) {
+                                    num.dataset.animated = "true";
+                                    const target = parseInt(num.dataset.target, 10);
+                                    const format = num.dataset.format || '';
+                                    const suffix = num.dataset.suffix || '';
+                                    animateValue(num, 0, target, 2500, format, suffix);
+                                }
+                            });
+
+                            metricsObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.3 });
+
+                metricsObserver.observe(metricsSection);
+            }
+        });
+
+        // FAQ Accordion Logic Native CSS Grid
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const content = item.querySelector('.faq-content'); // Get content element
+                    const lineTop = item.querySelector('.line-top');
+                    const lineBottom = item.querySelector('.line-bottom');
+                    const isOpen = item.classList.contains('is-open');
+
+                    // Close all others
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('is-open')) {
+                            otherItem.classList.remove('is-open');
+                            otherItem.querySelector('.faq-content').classList.remove('grid-rows-[1fr]'); // Remove open grid class
+                            otherItem.querySelector('.faq-content').classList.add('grid-rows-[0fr]'); // Add closed grid class
+                            const ot = otherItem.querySelector('.line-top');
+                            const ob = otherItem.querySelector('.line-bottom');
+                            ot.style.top = '0px';
+                            ot.style.transform = 'translateY(0) rotate(0deg)';
+                            ob.style.bottom = '0px';
+                            ob.style.transform = 'translateY(0) rotate(0deg)';
+                        }
+                    });
+
+                    if (isOpen) {
+                        // Close it
+                        item.classList.remove('is-open');
+                        content.classList.remove('grid-rows-[1fr]'); // Remove open grid class
+                        content.classList.add('grid-rows-[0fr]'); // Add closed grid class
+                        lineTop.style.top = '0px';
+                        lineTop.style.transform = 'translateY(0) rotate(0deg)';
+                        lineBottom.style.bottom = '0px';
+                        lineBottom.style.transform = 'translateY(0) rotate(0deg)';
+                    } else {
+                        // Open it
+                        item.classList.add('is-open');
+                        content.classList.remove('grid-rows-[0fr]'); // Remove closed grid class
+                        content.classList.add('grid-rows-[1fr]'); // Add open grid class
+                        lineTop.style.top = '50%';
+                        lineTop.style.transform = 'translateY(-50%) rotate(45deg)';
+                        lineBottom.style.bottom = '50%';
+                        lineBottom.style.transform = 'translateY(50%) rotate(-45deg)';
+                    }
+                });
+            });
+        });
+
+        // CTA Parallax Effect
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctaSection = document.querySelector('.js-cta-section');
+            const parallaxBg = document.querySelector('.js-cta-parallax-bg');
+            const parallaxContent = document.querySelector('.js-cta-parallax-content');
+
+            if (!ctaSection || !parallaxBg || !parallaxContent) return;
+
+            let ticking = false;
+
+            const updateParallax = () => {
+                // disable parallax on mobile to prevent jank
+                if (window.innerWidth < 768) {
+                    parallaxBg.style.transform = 'translate3d(0, 0, 0)';
+                    parallaxContent.style.transform = 'translate3d(0, 0, 0)';
+                    ticking = false;
+                    return;
+                }
+
+                const rect = ctaSection.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                // Only animate when section is intersecting the viewport
+                if (rect.top <= windowHeight && rect.bottom >= 0) {
+                    // Compute progress where 0 = center of screen, negative = scrolling up, positive = scrolling down
+                    const totalDist = windowHeight + rect.height;
+                    const scrolledDist = windowHeight - rect.top;
+                    const progress = (scrolledDist / totalDist) - 0.5;
+
+                    // background moves slightly slower (creating depth)
+                    const bgOffset = progress * 150;
+                    parallaxBg.style.transform = `translate3d(0, ${bgOffset}px, 0)`;
+
+                    // content elements float upwards slightly faster than document scroll
+                    const contentOffset = progress * -80;
+
+                    // Add subtle opacity fade out as it scrolls up far
+                    let opacity = 1;
+                    if (progress > 0.2) {
+                        opacity = Math.max(0, 1 - (progress - 0.2) * 2.5);
+                    }
+
+                    parallaxContent.style.transform = `translate3d(0, ${contentOffset}px, 0)`;
+                    parallaxContent.style.opacity = opacity.toFixed(2);
+                }
+
+                ticking = false;
+            };
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }, { passive: true });
+
+            // initial call
+            updateParallax();
         });
     </script>
 </body>
