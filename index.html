@@ -6,6 +6,9 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Studio Home: Experimental Motion</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/components.css">
+    <link rel="stylesheet" href="./css/animations.css">
     <!-- Material Symbols -->
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -21,137 +24,9 @@
         rel="stylesheet" />
     <!-- Tailwind Config -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#ff2e2e",
-                        "background-light": "#f8f5f5",
-                        "background-dark": "#0A0A0A", // User requested #0A0A0A
-                        "surface-dark": "#141414",
-                        "accent-gray": "#333333",
-                        "text-dim": "#888888",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"],
-                        "mono": ["Space Mono", "monospace"],
-                    },
-                    backgroundImage: {
-                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.1%22/%3E%3C/svg%3E')",
-                    },
-                    animation: {
-                        'noise': 'noise 0.2s infinite steps(2)',
-                    },
-                    keyframes: {
-                        noise: {
-                            '0%, 100%': { transform: 'translate(0, 0)' },
-                            '10%': { transform: 'translate(-5%, -5%)' },
-                            '20%': { transform: 'translate(-10%, 5%)' },
-                            '30%': { transform: 'translate(5%, -10%)' },
-                            '40%': { transform: 'translate(-5%, 15%)' },
-                            '50%': { transform: 'translate(-10%, 5%)' },
-                            '60%': { transform: 'translate(15%, 0)' },
-                            '70%': { transform: 'translate(0, 15%)' },
-                            '80%': { transform: 'translate(3%, 35%)' },
-                            '90%': { transform: 'translate(-10%, 10%)' },
-                        }
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        /* Custom Cursor CSS */
-        body {
-            cursor: none;
-        }
-
-        .custom-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ff2e2e;
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
-            mix-blend-mode: difference;
-        }
-
-        a:hover~.custom-cursor,
-        button:hover~.custom-cursor,
-        .cursor-hover:hover~.custom-cursor {
-            background-color: #ff2e2e;
-            width: 50px;
-            height: 50px;
-            opacity: 0.8;
-            border: none;
-        }
-
-        /* Reveal animation styles */
-        .js-scroll-img {
-            transform: scale(1.05);
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .scroll-project.is-visible .js-scroll-img {
-            transform: scale(1);
-        }
-
-        .js-scroll-content {
-            transform: translateY(40px);
-            opacity: 0;
-            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s,
-                opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
-        }
-
-        .scroll-project.is-visible .js-scroll-content {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-
-        /* Cinematic Metrics Styles */
-        .metric-container {
-            transform: translateY(80px) scale(0.95);
-            opacity: 0;
-            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-            will-change: transform, opacity;
-        }
-
-        .metric-container.is-visible {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-
-        .metric-number {
-            font-variant-numeric: tabular-nums;
-            display: inline-block;
-            min-width: 2ch;
-        }
-
-        /* FAQ Smooth Accordion */
-        .faq-content {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .faq-item.is-open .faq-content {
-            grid-template-rows: 1fr;
-        }
-
-        .faq-inner {
-            overflow: hidden;
-        }
-    </style>
-    <script type="module" src="/js/components.js"></script>
+    <script src="./js/tailwind-config.js"></script>
+    
+    <script type="module" src="./js/components.js"></script>
 </head>
 
 <body
@@ -950,6 +825,13 @@
             updateParallax();
         });
     </script>
+    <script src="./js/components.js"></script>
+    <script src="./js/animations.js"></script>
+    <script src="./js/scroll-effects.js"></script>
+    <script src="./js/main.js"></script>
 </body>
 
 </html>
+
+
+

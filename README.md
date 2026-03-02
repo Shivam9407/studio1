@@ -1,60 +1,70 @@
-# Experimental Motion Studio
+# Studio - Experimental Motion Studio
 
-## Quick Start Guide
+A premium, production-grade portfolio website featuring immersive motion design and cinematic digital experiences. Built with a focus on high-end aesthetics, smooth performance, and professional-grade code architecture.
 
-This project is a runnable local configuration of the original static `index.html`. It preserves all Tailwind CDN configurations, fonts, and inline JavaScript logic to ensure exact compatibility out of the box, while adding a real development server.
+## 🚀 Tech Stack
 
-### 1. Minimal Project Structure
+- **Core**: Vanilla HTML5, CSS3, JavaScript (ES6+)
+- **Styling**: Tailwind CSS (CDN for rapid delivery)
+- **Frameworks**: Web Components for modular UI (Navbar/Footer)
+- **Icons**: Material Symbols Outlined
+- **Typography**: Inter & Space Mono (Google Fonts)
+
+## 📁 Project Structure
+
 ```text
-/experimental-motion-studio
-├── index.html     (original logic, fully preserved)
-├── package.json   (server config)
-├── style.css      (optional external stylesheet placeholder)
-└── script.js      (optional external script placeholder)
+/
+├── index.html                  # Landing page
+├── work.html                   # Project gallery
+├── contact.html                # Contact and FAQ
+├── projects/                   # Case study pages
+│   ├── nike-air-max-2025.html
+│   ├── cyberpunk-2077.html
+│   └── architecture-brio-studio.html
+├── assets/                     # Media and textures
+│   ├── images/                 # Compressed photography
+│   └── videos/                 # Cinematic background reels
+├── css/                        # Modular style system
+│   ├── main.css                # Global & layout styles
+│   ├── components.css          # Reusable UI elements
+│   └── animations.css          # Motion & transition logic
+├── js/                         # Logic by responsibility
+│   ├── main.js                 # Core interactions (Cursor, Flux)
+│   ├── scroll-effects.js       # Parallax & reveal on scroll
+│   └── components.js           # Shared web components
+├── favicon/                    # Brand assets
+├── README.md                   # Documentation
+└── .gitignore                  # Production exclusion rules
 ```
 
-### 2. Terminal Setup Commands
+## 🛠️ Local Development
 
-Open a terminal in `d:\dd` (or wherever your project folder is), and run the following:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Shivam9407/studio.git
+   cd studio
+   ```
 
-```bash
-# 1. Start by installing the lightweight dev server globally (if needed)
-npm install -g serve
+2. **Serve the project**:
+   Use any local server (e.g., Live Server in VS Code):
+   ```bash
+   npx serve .
+   ```
 
-# OR install for this specific project (already configured in package.json)
-npm install
-```
+## 🌐 Vercel Deployment
 
-### 3. Command to Start Localhost
+This project is ready for **Zero-Config** deployment on Vercel.
 
-```bash
-# Start the local server
-npx serve .
-# OR
-npm run start
-```
+1. Import the repository in your Vercel dashboard.
+2. Select **None** or **Other** as the Framework Preset.
+3. Keep the **Root Directory** as `./`.
+4. Deploy. All relative paths are optimized for static hosting.
 
-### 4. Expected Localhost URL
+## 🎨 Design Philosophy
 
-- **URL:** `http://localhost:3000` (or the port indicated in your terminal)
+- **Premium Minimalism**: High contrast, dark mode default.
+- **Micro-Interactions**: Custom magnetic cursor and staggered reveal animations.
+- **Cinematic Experience**: Heavy use of video backgrounds and grain textures for a tactile feel.
 
 ---
-
-## Fallback Fixes (If things break)
-
-### If the Tailwind CDN fails to load:
-1. Try downloading the Tailwind standalone CLI.
-2. Link a compiled CSS file by adding `<link href="style.css" rel="stylesheet">` into the `index.html` head section instead of the CDN script tag.
-
-### If fonts don’t load:
-1. Google Fonts might be blocked on your network or failing.
-2. Download the `.ttf` files for **Inter** and **Space Mono** directly from Google Fonts.
-3. Place them in an `assets/fonts/` folder and add `@font-face` rules into `style.css`.
-
-### If Custom Cursor JS breaks:
-1. Check your browser console (`F12`).
-2. If `e.clientX` or `e.clientY` is undefined or throwing errors (sometimes happens on purely touch devices), add a guard clause:
-   ```javascript
-   if (!e.clientX || !e.clientY) return;
-   ```
-3. Alternatively, move the script into `script.js` and structure it with a `DOMContentLoaded` event listener to ensure all DOM elements are loaded before selecting `.custom-cursor`.
+*Created by [Shivam](https://github.com/Shivam9407)*
