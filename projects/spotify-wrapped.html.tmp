@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Spotify Wrapped — Case Study</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <meta content="A motion identity case study for the Spotify Wrapped 2024 campaign." name="description" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#E31E24",
+                        "background-dark": "#0A0A0A",
+                        "surface-dark": "#121212",
+                        "muted-dark": "#888888",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        mono: ["Space Mono", "monospace"],
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.8s ease-out',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                },
+            },
+        };
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #E31E24;
+        }
+
+        .metric-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform;
+        }
+
+        .metric-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .metric-text {
+            opacity: 0;
+            transition: opacity 0.6s ease-out;
+            transition-delay: 0.8s;
+        }
+
+        .metric-item.is-visible .metric-text {
+            opacity: 1;
+        }
+
+        .animated-number-wrapper {
+            display: inline-flex;
+            align-items: baseline;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-dark text-white font-sans antialiased selection:bg-primary selection:text-white overflow-x-hidden">
+    <!-- Global Static Noise Overlay -->
+    <div class="fixed inset-0 z-50 pointer-events-none opacity-[0.06]"
+        style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);">
+    </div>
+    <custom-navbar></custom-navbar>
+
+    <!-- HERO -->
+    <header class="relative w-full h-[calc(100vh-96px)] mt-24 flex flex-col justify-end pb-8 md:pb-12 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="Concert crowd with neon lights"
+                class="w-full h-full object-cover object-center opacity-70 scale-105 animate-[pulse_10s_ease-in-out_infinite]"
+                src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-transparent"></div>
+        </div>
+        <div class="relative z-10 px-6 md:px-12 lg:px-24 w-full animate-slide-up">
+            <div class="mb-4 flex items-center gap-3">
+                <span
+                    class="font-mono text-xs text-primary uppercase tracking-widest bg-primary/10 px-3 py-1 rounded">2024</span>
+                <span class="font-mono text-xs text-gray-400 uppercase tracking-widest">Motion Identity • Data
+                    Viz</span>
+            </div>
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-black uppercase leading-[0.85] tracking-tighter mb-6">
+                Spotify<br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-500">Wrapped</span>
+            </h1>
+            <p
+                class="font-mono text-sm md:text-base uppercase tracking-widest max-w-2xl text-gray-400 mb-12 border-l-2 border-primary pl-4">
+                Turning a year of listening into a cinematic data experience.
+            </p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-white/10 pt-6">
+                <div>
+                    <span class="block font-mono text-xs text-gray-500 uppercase mb-1">Client</span>
+                    <span class="block font-bold text-sm uppercase">Spotify Global</span>
+                </div>
+                <div>
+                    <span class="block font-mono text-xs text-gray-500 uppercase mb-1">Year</span>
+                    <span class="block font-bold text-sm uppercase">2024</span>
+                </div>
+                <div class="col-span-2">
+                    <span class="block font-mono text-xs text-gray-500 uppercase mb-1">Role</span>
+                    <span class="block font-bold text-sm uppercase">Motion Identity / Data Visualization / Art
+                        Direction</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- OVERVIEW -->
+    <section class="pt-16 pb-24 px-6 md:px-12 lg:px-24 bg-background-dark">
+        <div class="max-w-4xl mx-auto text-center mb-20">
+            <span class="font-mono text-primary text-xs uppercase tracking-widest mb-4 block">01 / The Brief</span>
+            <h2 class="text-4xl md:text-6xl font-black uppercase mb-8 tracking-tight">Overview</h2>
+            <p class="text-lg md:text-xl leading-relaxed text-gray-400 font-light">
+                Spotify Wrapped is the world's most anticipated music recap — a moment where 500 million users discover
+                who they are through sound. We were tasked with building the global motion language that transforms raw
+                streaming data into an immersive, share-worthy personal story. Every transition, every color burst,
+                every typographic reveal had to feel earned and cinematic.
+            </p>
+        </div>
+        <div class="w-full overflow-hidden rounded-lg group"
+            onmouseenter="this.querySelector('img').style.transform='scale(1.05)'"
+            onmouseleave="this.querySelector('img').style.transform='scale(1)'">
+            <img alt="Spotify concert atmosphere"
+                class="w-full h-[60vh] md:h-[70vh] object-cover transition-transform duration-700"
+                src="https://images.pexels.com/photos/2747449/pexels-photo-2747449.jpeg" loading="lazy" />
+        </div>
+    </section>
+
+    <!-- CHALLENGE -->
+    <section class="py-24 px-6 md:px-12 lg:px-24 border-t border-gray-900">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-center max-w-[1400px] mx-auto">
+            <div class="lg:col-span-6">
+                <span class="font-mono text-primary text-xs uppercase tracking-widest mb-4 block">02 / Context</span>
+                <h2 class="text-4xl md:text-5xl font-black uppercase mb-8 leading-none">The<br />Challenge</h2>
+                <div class="space-y-6 text-gray-400 font-light leading-relaxed">
+                    <p>Wrapped runs simultaneously across 180+ markets with data personalized for every single listener.
+                        The challenge was architectural: build a motion system flexible enough to scale across unlimited
+                        user permutations, while ensuring every individual feels like it was made just for them.</p>
+                    <p>Technically, frame rates on mid-range Android devices had to match the premium feel of flagship
+                        iOS — every animation had to be GPU-composited and pixel-perfect across 500 million unique
+                        instances.</p>
+                </div>
+                <div class="mt-12 flex flex-wrap gap-4">
+                    <div class="px-4 py-2 border border-gray-800 rounded-full font-mono text-xs uppercase">Lottie
+                        Animation</div>
+                    <div class="px-4 py-2 border border-gray-800 rounded-full font-mono text-xs uppercase">After Effects
+                    </div>
+                    <div class="px-4 py-2 border border-gray-800 rounded-full font-mono text-xs uppercase">Web Audio API
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-6">
+                <div class="relative w-full aspect-square bg-surface-dark overflow-hidden rounded-lg">
+                    <img alt="Abstract audio wave visualization"
+                        class="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                        src="https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg" loading="lazy" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="py-24 px-6 md:px-12 lg:px-24 bg-surface-dark border-t border-gray-900">
+        <span class="font-mono text-primary text-xs uppercase tracking-widest mb-4 block">03 / Execution</span>
+        <h2 class="text-4xl md:text-6xl font-black uppercase mb-8">The Solution</h2>
+        <p class="max-w-3xl text-lg md:text-xl font-light text-gray-400 leading-relaxed mb-16">
+            We created a universal motion grammar — a living system of transitions, data morphs, and typographic
+            explosions that scales from a single listener to the entire planet, all driven by real musical energy.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div
+                class="bg-black/40 border border-gray-800 p-8 rounded-lg hover:border-primary transition-colors duration-300">
+                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                    <span class="font-mono text-primary text-xs font-bold">01</span>
+                </div>
+                <h3 class="font-bold text-lg uppercase mb-3 tracking-tight">Data Choreography</h3>
+                <p class="text-gray-400 text-sm font-light leading-relaxed">Every bar chart, every percentage reveal is
+                    a choreographed motion event — not a static graphic. Numbers fly in, bars grow on the beat,
+                    playlists materialize from particle clouds.</p>
+            </div>
+            <div
+                class="bg-black/40 border border-gray-800 p-8 rounded-lg hover:border-primary transition-colors duration-300">
+                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                    <span class="font-mono text-primary text-xs font-bold">02</span>
+                </div>
+                <h3 class="font-bold text-lg uppercase mb-3 tracking-tight">Adaptive Color Engine</h3>
+                <p class="text-gray-400 text-sm font-light leading-relaxed">We extracted dominant colors from each
+                    user's top artist album artwork and remapped the entire UI palette in real time — making every
+                    Wrapped feel like a unique art piece.</p>
+            </div>
+            <div
+                class="bg-black/40 border border-gray-800 p-8 rounded-lg hover:border-primary transition-colors duration-300">
+                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                    <span class="font-mono text-primary text-xs font-bold">03</span>
+                </div>
+                <h3 class="font-bold text-lg uppercase mb-3 tracking-tight">60fps Everywhere</h3>
+                <p class="text-gray-400 text-sm font-light leading-relaxed">Using compositor-layer animations
+                    exclusively — transform, opacity, and filter — we guaranteed 60fps performance on devices as old as
+                    3 years without a single JavaScript jank.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="py-24 bg-surface-dark text-white relative overflow-hidden border-t border-gray-900"
+        id="results-section">
+        <div class="px-6 md:px-12 lg:px-24">
+            <span class="font-mono text-primary text-xs uppercase tracking-widest mb-4 block">04 / Results</span>
+            <div class="mb-20 max-w-4xl">
+                <h2 class="text-4xl md:text-5xl font-black uppercase mb-6 tracking-tight">Performance Metrics</h2>
+                <p class="text-lg md:text-xl text-gray-400 font-light leading-relaxed">Wrapped 2024 became the
+                    most-shared digital moment in music history, generating record social impressions across 180
+                    countries simultaneously.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6">
+                    <div class="relative w-full aspect-[4/5] bg-surface-dark overflow-hidden rounded-lg group">
+                        <img alt="Neon concert crowd lights"
+                            class="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                            src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg" loading="lazy" />
+                    </div>
+                </div>
+                <div class="lg:col-span-6 flex flex-col justify-center">
+                    <div
+                        class="flex flex-col sm:flex-row sm:justify-between sm:items-end border-b border-gray-800 pb-6 mb-8 metric-item">
+                        <div class="mb-4 sm:mb-0 metric-text">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-1 tracking-tight text-primary uppercase">Social
+                                Shares</h3>
+                            <p class="text-sm text-gray-400 font-light">Increase in user-generated shares</p>
+                        </div>
+                        <div
+                            class="text-6xl md:text-7xl font-sans tracking-tighter leading-none shrink-0 animated-number-wrapper">
+                        </div>
+                    </div>
+                    <div
+                        class="flex flex-col sm:flex-row sm:justify-between sm:items-end border-b border-gray-800 pb-6 mb-8 metric-item">
+                        <div class="mb-4 sm:mb-0 metric-text">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-1 tracking-tight text-primary uppercase">
+                                Completion Rate</h3>
+                            <p class="text-sm text-gray-400 font-light">Users who completed the full Wrapped story</p>
+                        </div>
+                        <div
+                            class="text-6xl md:text-7xl font-sans tracking-tighter leading-none shrink-0 animated-number-wrapper">
+                        </div>
+                    </div>
+                    <div
+                        class="flex flex-col sm:flex-row sm:justify-between sm:items-end border-b border-gray-800 pb-6 mb-12 metric-item">
+                        <div class="mb-4 sm:mb-0 metric-text">
+                            <h3 class="text-2xl md:text-3xl font-bold mb-1 tracking-tight text-primary uppercase">App
+                                Opens</h3>
+                            <p class="text-sm text-gray-400 font-light">Increase on Wrapped launch day</p>
+                        </div>
+                        <div
+                            class="text-6xl md:text-7xl font-sans tracking-tighter leading-none shrink-0 animated-number-wrapper">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEXT PROJECT -->
+    <section class="py-24 px-6 md:px-12 lg:px-24 bg-background-dark border-t border-gray-900">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
+            <a class="group w-full md:w-auto" href="nike-air-max-2025.html">
+                <span class="block font-mono text-xs text-gray-500 uppercase mb-2">Previous Project</span>
+                <h3 class="text-2xl md:text-3xl font-bold uppercase group-hover:text-primary transition-colors">Nike
+                    Air<br />Max 2025</h3>
+                <div class="w-full h-px bg-gray-800 mt-4 group-hover:bg-primary transition-colors"></div>
+            </a>
+            <div class="order-first md:order-none self-center">
+                <a class="font-mono text-sm uppercase tracking-widest border border-gray-700 px-8 py-4 rounded hover:bg-white hover:text-black hover:border-white transition-all duration-300"
+                    href="../work.html">Back to Work</a>
+            </div>
+            <a class="group text-right w-full md:w-auto" href="cyberpunk-2077.html">
+                <span class="block font-mono text-xs text-gray-500 uppercase mb-2">Next Project</span>
+                <h3 class="text-2xl md:text-3xl font-bold uppercase group-hover:text-primary transition-colors">
+                    Cyberpunk<br />2077 UI</h3>
+                <div class="w-full h-px bg-gray-800 mt-4 group-hover:bg-primary transition-colors"></div>
+            </a>
+        </div>
+    </section>
+    <custom-footer></custom-footer>
+
+            if (prefersReducedMotion.matches) {
+                document.querySelectorAll('.metric-item').forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+            const metricItems = document.querySelectorAll('.metric-item');
+            const animatedNumbers = document.querySelectorAll('.animated-number');
+            let hasAnimated = false;
+                setTimeout(() => {
+                    let startTime = null;
+                    const update = currentTime => {
+                        if (!startTime) startTime = currentTime;
+                        const elapsed = currentTime - startTime;
+                        element.textContent = Math.floor(progress * targetValue);
+                        if (elapsed < duration) requestAnimationFrame(update);
+                        else element.textContent = targetValue;
+                    };
+                    requestAnimationFrame(update);
+                }, delay);
+            };
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasAnimated) {
+                        hasAnimated = true;
+                        metricItems.forEach((item, i) => setTimeout(() => item.classList.add('is-visible'), i * 200));
+                    }
+                });
+            }, { threshold: 0.2 });
+            const section = document.getElementById('results-section');
+            if (section) observer.observe(section);
+        });
+</body>
+
+</html>
+
+
+
