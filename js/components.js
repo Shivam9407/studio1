@@ -97,12 +97,12 @@ class CustomFooter extends HTMLElement {
         this.innerHTML = `
         <footer class="bg-primary text-white py-32 px-6 md:px-12 relative overflow-hidden mt-auto w-full">
             <!-- Decorative giant text -->
-            <div class="absolute -bottom-20 -right-20 text-[20rem] font-black text-black/10 leading-none select-none pointer-events-none">
+            <div class="absolute -bottom-10 md:-bottom-20 -right-10 md:-right-20 text-[clamp(10rem,30vw,20rem)] font-black text-black/10 leading-none select-none pointer-events-none">
                 TALK
             </div>
             <div class="max-w-[1400px] mx-auto relative z-10 flex flex-col md:flex-row justify-between items-start">
                 <div class="flex flex-col gap-8 mb-16 md:mb-0">
-                    <h2 class="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] cursor-pointer hover:text-black transition-colors" onclick="window.location.href='/contact.html'">
+                    <h2 class="text-[clamp(3.5rem,10vw,6rem)] md:text-8xl font-black tracking-tighter leading-[0.9] cursor-pointer hover:text-black transition-colors" onclick="window.location.href='/contact.html'">
                         START A <br />
                         PROJECT
                     </h2>
@@ -111,7 +111,7 @@ class CustomFooter extends HTMLElement {
                         <span class="material-symbols-outlined">north_east</span>
                     </a>
                 </div>
-                <div class="flex flex-col gap-12 text-right">
+                <div class="flex flex-col gap-12 text-left md:text-right mt-12 md:mt-0">
                     <div class="flex flex-col gap-2">
                         <span class="font-mono text-sm uppercase opacity-70">Socials</span>
                         <div class="flex flex-col gap-1 text-lg font-bold">
